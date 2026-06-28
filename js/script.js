@@ -1386,6 +1386,6 @@ window.sendToAI = sendToAI; window.saveApiKey = saveApiKey; window.resetApiKey =
 window.speakKorean = speakKorean; window.playListeningExercise = playListeningExercise; window.checkListeningAnswer = checkListeningAnswer;
 window.loadReading = loadReading; window.selectReadingOption = selectReadingOption; window.checkReading = checkReading;
 window.loadWriting = loadWriting; window.checkWriting = checkWriting; window.showWritingAnswer = showWritingAnswer;
-window.startMockTest = startMockTest; window.answerMockTest = answerMockTest; window.nextMockTestQuestion = nextMockTestQuestion; window.restartMockTestWrong = restartMockTestWrong;
+window.startMockTest = startMockTest; window.answerMockTest = answerMockTest; window.nextMockTestQuestion = nextMockTestQuestion; window.goToMockTestQuestion = goToMockTestQuestion; window.restartMockTestWrong = restartMockTestWrong;
 
 console.log('🎮 Korean Quest loaded! Level', state.level, '•', state.xp, 'XP');
