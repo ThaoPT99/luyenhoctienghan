@@ -34,6 +34,15 @@
                 <div class="nav-item" data-tab="listening">
                     <span class="nav-icon">🎧</span><span class="nav-label">Luyện nghe</span><span class="nav-badge">NEW</span>
                 </div>
+                <div class="nav-item" data-tab="reading">
+                    <span class="nav-icon">📄</span><span class="nav-label">Đọc hiểu</span>
+                </div>
+                <div class="nav-item" data-tab="writing">
+                    <span class="nav-icon">✏️</span><span class="nav-label">Luyện viết</span>
+                </div>
+                <div class="nav-item" data-tab="mocktest">
+                    <span class="nav-icon">📝</span><span class="nav-label">Thi thử</span><span class="nav-badge">NEW</span>
+                </div>
                 <div class="nav-item" data-tab="ai-tutor">
                     <span class="nav-icon">🤖</span><span class="nav-label">AI Trợ giảng</span>
                 </div>
@@ -219,6 +228,109 @@
                     <div class="listening-options" id="listeningOptions"></div>
                     <div class="exercise-feedback" id="listeningFeedback"></div>
                     <p style="font-size:13px;color:var(--text-light);margin-top:12px;">🎮 +5XP mỗi câu đúng</p>
+                </div>
+            </section>
+
+            <!-- ===== READING ===== -->
+            <section id="tab-reading" class="tab-content">
+                <div class="tab-header">
+                    <h2>📄 Đọc hiểu</h2>
+                    <span class="tab-actions">Đọc đoạn văn và trả lời câu hỏi</span>
+                </div>
+                <div class="reading-controls">
+                    <select id="readingLevel" onchange="loadReading()">
+                        <option value="all">Tất cả trình độ</option>
+                        <option value="3">🟡 Sơ cấp 2 (Bài 16-30)</option>
+                        <option value="4">🟠 Trung cấp (Bài 31-45)</option>
+                    </select>
+                    <button class="action-btn secondary" onclick="loadReading()">🎲 Bài đọc khác</button>
+                </div>
+                <div class="reading-area" id="readingArea">
+                    <div class="reading-header">
+                        <h3 id="readingTitle">Chọn bài đọc</h3>
+                        <span id="readingSource" class="reading-source"></span>
+                    </div>
+                    <div class="reading-passage" id="readingPassage">
+                        Nhấn "Bài đọc khác" để bắt đầu luyện đọc hiểu.
+                    </div>
+                    <div class="reading-questions" id="readingQuestions"></div>
+                    <div class="exercise-feedback" id="readingFeedback"></div>
+                    <div class="reading-actions">
+                        <button class="action-btn secondary" onclick="checkReading()">✅ Kiểm tra</button>
+                        <span class="reading-score" id="readingScore">Điểm: 0/0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== WRITING ===== -->
+            <section id="tab-writing" class="tab-content">
+                <div class="tab-header">
+                    <h2>✏️ Luyện viết TOPIK</h2>
+                    <span class="tab-actions">Câu 51-54 — Nhập đáp án</span>
+                </div>
+                <div class="writing-controls">
+                    <select id="writingLevel" onchange="loadWriting()">
+                        <option value="all">Tất cả trình độ</option>
+                        <option value="3">🟡 Sơ cấp 2</option>
+                        <option value="4">🟠 Trung cấp</option>
+                    </select>
+                    <button class="action-btn secondary" onclick="loadWriting()">🎲 Đề khác</button>
+                </div>
+                <div class="writing-area" id="writingArea">
+                    <div class="writing-prompt" id="writingPrompt">Chọn "Đề khác" để bắt đầu luyện viết.</div>
+                    <div class="writing-hint" id="writingHint"></div>
+                    <textarea class="writing-input" id="writingInput" placeholder="Nhập câu trả lời của bạn..." rows="4"></textarea>
+                    <div class="writing-actions">
+                        <button class="action-btn primary" onclick="checkWriting()">📤 Gửi bài</button>
+                        <button class="action-btn outline" onclick="showWritingAnswer()">👁️ Xem đáp án mẫu</button>
+                    </div>
+                    <div class="writing-feedback" id="writingFeedback"></div>
+                    <div class="writing-sample" id="writingSample" style="display:none;"></div>
+                </div>
+            </section>
+
+            <!-- ===== MOCK TEST ===== -->
+            <section id="tab-mocktest" class="tab-content">
+                <div class="tab-header">
+                    <h2>📝 Thi thử TOPIK</h2>
+                    <span id="testTimer" class="tab-actions">⏱ 00:00</span>
+                </div>
+                <div class="mocktest-start" id="mocktestStart">
+                    <div class="mocktest-intro">
+                        <h3>🎯 Kiểm tra kiến thức</h3>
+                        <p>10 câu hỏi ngẫu nhiên từ tất cả bài học. Trả lời đúng >=7/10 là đạt!</p>
+                        <div class="mocktest-settings">
+                            <label>
+                                <span>Số câu:</span>
+                                <select id="testQuestionCount">
+                                    <option value="5">5 (Nhanh)</option>
+                                    <option value="10" selected>10 (Tiêu chuẩn)</option>
+                                    <option value="20">20 (Đầy đủ)</option>
+                                </select>
+                            </label>
+                            <label>
+                                <span>Phạm vi:</span>
+                                <select id="testScope">
+                                    <option value="all">Tất cả bài</option>
+                                    <option value="stage2">🟢 GĐ 2: Sơ cấp 1</option>
+                                    <option value="stage3">🟡 GĐ 3: Sơ cấp 2</option>
+                                    <option value="stage4">🟠 GĐ 4: Trung cấp</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button class="action-btn primary" onclick="startMockTest()" style="margin-top:16px;font-size:16px;padding:14px 32px;">🎯 Bắt đầu thi</button>
+                    </div>
+                </div>
+                <div class="mocktest-area" id="mocktestArea" style="display:none;">
+                    <div class="mocktest-progress" id="mocktestProgress">Câu 1/10</div>
+                    <div class="mocktest-question" id="mocktestQuestion"></div>
+                    <div class="mocktest-options" id="mocktestOptions"></div>
+                    <div class="mocktest-nav">
+                        <button class="action-btn secondary" id="mocktestNextBtn" onclick="nextMockTestQuestion()">Câu tiếp →</button>
+                    </div>
+                </div>
+                <div class="mocktest-result" id="mocktestResult" style="display:none;">
+                    <!-- Filled by JS -->
                 </div>
             </section>
 

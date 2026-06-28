@@ -193,6 +193,9 @@ function navigateTo(tab) {
     if (tab === 'progress') updateProgress();
     if (tab === 'vocabulary') renderVocab();
     if (tab === 'listening') setTimeout(playListeningExercise, 300);
+    if (tab === 'reading') loadReading();
+    if (tab === 'writing') loadWriting();
+    if (tab === 'mocktest') {} // wait for user to click start
 }
 
 // ===== DASHBOARD =====
@@ -982,6 +985,396 @@ function markStudiedToday() {
     }
 }
 
+// ===== 📄 READING COMPREHENSION =====
+let _readingData = null;
+let _readingScore = { correct: 0, total: 0 };
+
+function loadReading() {
+    const level = document.getElementById('readingLevel').value;
+    let lessons = level !== 'all' 
+        ? lessonsData.filter(l => l.stage === parseInt(level) && l.reading)
+        : lessonsData.filter(l => l.reading);
+    
+    if (lessons.length === 0) {
+        document.getElementById('readingPassage').innerHTML = 'Chua co bai doc cho trinh do nay. Hay hoc bai truoc!';
+        document.getElementById('readingQuestions').innerHTML = '';
+        document.getElementById('readingFeedback').style.display = 'none';
+        return;
+    }
+    
+    const lesson = lessons[Math.floor(Math.random() * lessons.length)];
+    _readingData = lesson;
+    _readingScore = { correct: 0, total: lesson.readingQuestions ? lesson.readingQuestions.length : 0 };
+    
+    document.getElementById('readingTitle').textContent = 'Bai ' + lesson.id + ': ' + lesson.title;
+    document.getElementById('readingSource').textContent = lesson.level;
+    document.getElementById('readingPassage').innerHTML = '<p style="line-height:1.8;font-size:15px;">' + lesson.reading + '</p>';
+    document.getElementById('readingFeedback').style.display = 'none';
+    document.getElementById('readingFeedback').className = 'exercise-feedback';
+    document.getElementById('readingScore').textContent = 'Diem: 0/' + _readingScore.total;
+    
+    // Reset all selected states
+    window._readingAnswers = {};
+    
+    if (lesson.readingQuestions) {
+        document.getElementById('readingQuestions').innerHTML = lesson.readingQuestions.map((q, qi) => `
+            <div class="reading-q-block">
+                <p class="reading-q-text">${qi+1}. ${q.q}</p>
+                <div class="reading-q-options">
+                    ${q.options.map((opt, oi) => `
+                        <div class="reading-option" data-qi="${qi}" data-oi="${oi}" onclick="selectReadingOption(this)">${opt}</div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+    } else {
+        document.getElementById('readingQuestions').innerHTML = '';
+    }
+}
+
+function selectReadingOption(el) {
+    const qi = parseInt(el.dataset.qi);
+    document.querySelectorAll(`.reading-option[data-qi="${qi}"]`).forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    window._readingAnswers[qi] = parseInt(el.dataset.oi);
+}
+
+function checkReading() {
+    if (!_readingData || !_readingData.readingQuestions) return;
+    const fb = document.getElementById('readingFeedback');
+    
+    // Check if all answered
+    const total = _readingData.readingQuestions.length;
+    const answered = Object.keys(window._readingAnswers).length;
+    if (answered < total) {
+        fb.textContent = '⚠️ Vui long tra loi het ' + total + ' cau truoc!';
+        fb.className = 'exercise-feedback show incorrect';
+        return;
+    }
+    
+    let correct = 0;
+    _readingData.readingQuestions.forEach((q, i) => {
+        if (window._readingAnswers[i] === q.answer) correct++;
+        // Mark correct/incorrect visually
+        document.querySelectorAll(`.reading-option[data-qi="${i}"]`).forEach(o => {
+            const oi = parseInt(o.dataset.oi);
+            if (oi === q.answer) o.classList.add('correct');
+            else if (o.classList.contains('selected') && oi !== q.answer) o.classList.add('incorrect');
+            o.style.cursor = 'default';
+            o.onclick = null;
+        });
+    });
+    
+    _readingScore.correct = correct;
+    _readingScore.total = total;
+    
+    const pct = Math.round(correct/total*100);
+    if (correct >= total - 1) {
+        fb.textContent = '🎉 Dung ' + correct + '/' + total + '! +' + (correct * 5) + 'XP!'; 
+        fb.className = 'exercise-feedback show correct';
+        addXP(correct * 5);
+        markStudiedToday();
+        const newAch = checkAchievements();
+        if (newAch.length > 0) {
+            setTimeout(() => newAch.forEach(id => {
+                const a = ACHIEVEMENTS_LIST.find(x => x.id === id);
+                if (a) celebrate(a.icon + ' ' + a.name + '! ' + a.desc);
+            }), 500);
+        }
+        saveState();
+        updateDashboard(); updateGameUI();
+    } else {
+        fb.textContent = '😅 Dung ' + correct + '/' + total + '. Hay doc lai bai va thu lai!'; 
+        fb.className = 'exercise-feedback show incorrect';
+    }
+    
+    document.getElementById('readingScore').textContent = 'Diem: ' + _readingScore.correct + '/' + _readingScore.total;
+}
+
+// ===== ✏️ WRITING PRACTICE =====
+let _writingPrompt = null;
+
+function loadWriting() {
+    const level = document.getElementById('writingLevel').value;
+    const prompts = [
+        { 
+            level: 3, 
+            prompt: 'Cau 51: Hay dien tu thich hop vao cho trong:\n\n"가: _____에 가요?\n나: 학교에 가요."',
+            hint: 'Tu de hoi "dau" bang tieng Han la gi? (Goi y: 4 chu cai, bat dau bang "어")',
+            sample: '어디',
+            explanation: '어디 = dau. Cau hoi: 어디에 가요? = Di dau vay?'
+        },
+        { 
+            level: 3, 
+            prompt: 'Cau 52: Viet cau hoan chinh tu cac tu sau:\n\n"저 / 학생 / 입니다" → ________________',
+            hint: 'Sap xep: Toi - hoc sinh - la. Dung thu tu SOV cua tieng Han.',
+            sample: '저는 학생입니다',
+            explanation: '저는(Toi) + 학생(hoc sinh) + 입니다(la).' 
+        },
+        { 
+            level: 4, 
+            prompt: 'Cau 53: Viet doan van ngan (5-7 cau) gioi thieu ve ban than.\n\nHay sap xep cac y sau thanh doan van hoan chinh:\n1. Gioi thieu ten, quoc tich\n2. Nghe nghiep/hoc tap\n3. So thich\n4. Ly do hoc tieng Han\n5. Muc tieu tuong lai',
+            hint: 'Dung cac cau mau: 저는...입니다 / ...이에요/예요. 제 취미는... / ...기 위해 한국어를 공부해요.',
+            sample: '안녕하세요, 저는 마이클이에요. 베트남 사람이에요. 저는 학생이에요. 제 취미는 한국 노래 듣기예요. 한국어를 공부하기 위해 열심히 공부하고 있어요. TOPIK 2에 합격하는 것이 제 목표예요.',
+            explanation: 'Viet gioi thieu ban than: ten - quoc tich - nghe nghiep - so thich - muc tieu.'
+        },
+        { 
+            level: 4, 
+            prompt: 'Cau 54: Viet luan ve chu de \"Hoc ngoai ngu co tam quan trong nhu the nao?\" (Viet khoang 10-15 cau)\n\nGoi y:\n- Mo bai: Ngay nay, hoc ngoai ngu rat quan trong...\n- Than bai: Ly do 1 (co hoi viec lam), Ly do 2 (giao luu van hoa), Ly do 3 (phat trien ban than)\n- Ket bai: ...',
+            hint: 'Dung cau truc: 서론(먼저/요즘) - 본론(첫째/둘째/셋째) - 결론(마지막으로). Su dung cac mau cau trung cap: ~기 때문에, ~(으)면, ~(으)ㄹ 수 있다.',
+            sample: '요즘 외국어를 배우는 것이 중요해지고 있습니다. 첫째, 외국어를 할 수 있으면 취업에 도움이 됩니다. 둘째, 다른 문화를 이해할 수 있습니다. 셋째, 자신감을 가질 수 있습니다. 마지막으로, 외국어를 배우는 것은 미래를 위한 투자입니다.',
+            explanation: 'Viet luan: 서론(quan trong) + 본론(3 ly do) + 결론(dau tu cho tuong lai).'
+        },
+        { 
+            level: 3, 
+            prompt: 'Cau 51: Hay chon tu dung de dien vao cho trong:\n\n"가: _____에 살아요?\n나: 하노이에 살아요."',
+            hint: '"Song o dau?" - tu de hoi noi chon bang tieng Han la gi?',
+            sample: '어디',
+            explanation: '어디에 살아요? = Song o dau?'
+        },
+        { 
+            level: 4, 
+            prompt: 'TOPIK 2 Cau 53: Bieu do the hien so gio dung internet cua nguoi dung theo do tuoi. Hay viet doan van mo ta bieu do.\n\nSo lieu:\n- 10-19 tuoi: 5 gio/ngay\n- 20-29 tuoi: 7 gio/ngay\n- 30-39 tuoi: 5 gio/ngay\n- 40-49 tuoi: 3 gio/ngay\n- 50+ tuoi: 2 gio/ngay',
+            hint: 'Dung cau truc: ~에 따르면(theo...), ~은/는 ~시간입니다(la ~ gio). So sanh: ~보다( hon), 가장(nhat).',
+            sample: '자료에 따르면 20대가 하루에 7시간으로 인터넷을 가장 많이 사용합니다. 10대와 30대는 5시간으로 그다음입니다. 40대는 3시간, 50대 이상은 2시간으로 나이에 따라 인터넷 사용 시간이 다릅니다.',
+            explanation: 'Mo ta bieu do: dua ra so lieu, so sanh cac nhom tuoi.'
+        }
+    ];
+    
+    let filtered = level !== 'all' 
+        ? prompts.filter(p => p.level === parseInt(level))
+        : prompts;
+    
+    _writingPrompt = filtered[Math.floor(Math.random() * filtered.length)];
+    
+    document.getElementById('writingPrompt').innerHTML = '<div style="white-space:pre-line;font-size:15px;line-height:1.8;">' + _writingPrompt.prompt + '</div>';
+    document.getElementById('writingHint').innerHTML = '💡 <strong>Goi y:</strong> ' + _writingPrompt.hint;
+    document.getElementById('writingInput').value = '';
+    document.getElementById('writingFeedback').innerHTML = '';
+    document.getElementById('writingFeedback').className = 'exercise-feedback';
+    document.getElementById('writingFeedback').style.display = 'none';
+    document.getElementById('writingSample').style.display = 'none';
+}
+
+function checkWriting() {
+    if (!_writingPrompt) return;
+    const userAnswer = document.getElementById('writingInput').value.trim();
+    if (!userAnswer) {
+        document.getElementById('writingFeedback').innerHTML = '⚠️ Hay nhap cau tra loi cua ban!';
+        document.getElementById('writingFeedback').className = 'exercise-feedback show incorrect';
+        return;
+    }
+    
+    addXP(3);
+    markStudiedToday();
+    saveState();
+    updateDashboard(); updateGameUI();
+    
+    document.getElementById('writingFeedback').innerHTML = '✅ Da nhan bai! +3XP. Click "Xem dap an mau" de so sanh!';
+    document.getElementById('writingFeedback').className = 'exercise-feedback show correct';
+}
+
+function showWritingAnswer() {
+    if (!_writingPrompt) return;
+    const el = document.getElementById('writingSample');
+    el.style.display = 'block';
+    el.innerHTML = '<div class="writing-sample-content"><h4>📝 Dap an mau:</h4><p style="white-space:pre-line;">' + _writingPrompt.sample + '</p><hr><p><strong>Giai thich:</strong> ' + _writingPrompt.explanation + '</p></div>';
+}
+
+// ===== 📝 MOCK TEST =====
+let _mockTest = null;
+let _mockTestIndex = 0;
+let _mockTestAnswers = {};
+
+function startMockTest() {
+    const count = parseInt(document.getElementById('testQuestionCount').value);
+    const scope = document.getElementById('testScope').value;
+    
+    // Generate questions from vocabulary
+    let pool = allVocabulary.map((w,i) => ({...w, index: i}));
+    if (scope === 'stage2') pool = pool.filter(w => w.lesson >= 4 && w.lesson <= 15);
+    else if (scope === 'stage3') pool = pool.filter(w => w.lesson >= 16 && w.lesson <= 30);
+    else if (scope === 'stage4') pool = pool.filter(w => w.lesson >= 31 && w.lesson <= 45);
+    
+    if (pool.length < count) {
+        alert('Khong du cau hoi! ' + pool.length + ' tu co san.');
+        return;
+    }
+    
+    const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, count);
+    _mockTest = shuffled.map(w => {
+        const wrongs = allVocabulary
+            .filter(x => x.meaning !== w.meaning)
+            .map(x => x.meaning)
+            .filter((v,i,a) => a.indexOf(v) === i)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3);
+        return {
+            kr: w.kr,
+            correct: w.meaning,
+            options: [w.meaning, ...wrongs].sort(() => Math.random() - 0.5),
+            lesson: w.lesson
+        };
+    });
+    
+    _mockTestIndex = 0;
+    _mockTestAnswers = {};
+    
+    document.getElementById('mocktestStart').style.display = 'none';
+    document.getElementById('mocktestArea').style.display = 'block';
+    document.getElementById('mocktestResult').style.display = 'none';
+    
+    renderMockTestQuestion();
+}
+
+function renderMockTestQuestion() {
+    if (!_mockTest || _mockTestIndex >= _mockTest.length) {
+        finishMockTest();
+        return;
+    }
+    
+    const q = _mockTest[_mockTestIndex];
+    document.getElementById('mocktestProgress').textContent = 'Cau ' + (_mockTestIndex + 1) + '/' + _mockTest.length;
+    
+    // Create progress dots
+    let dots = '';
+    for (let i = 0; i < _mockTest.length; i++) {
+        const status = _mockTestAnswers[i] !== undefined ? (_mockTestAnswers[i] === _mockTest[i].correct ? 'correct' : 'wrong') : '';
+        dots += '<span class="test-dot ' + status + '" onclick="goToMockTestQuestion(' + i + ')">' + (i+1) + '</span>';
+    }
+    
+    document.getElementById('mocktestQuestion').innerHTML = `
+        <div class="test-dots">${dots}</div>
+        <div style="text-align:center;padding:20px;">
+            <div style="font-size:36px;font-weight:700;font-family:var(--header-font);margin-bottom:8px;">${q.kr}</div>
+            <div style="font-size:16px;color:var(--text-secondary);">Tu nay co nghia la gi?</div>
+        </div>
+        <div class="mocktest-options-list">
+            ${q.options.map((opt, oi) => {
+                const selected = _mockTestAnswers[_mockTestIndex] === opt;
+                return '<div class="mocktest-option ' + (selected ? 'selected' : '') + '" onclick="answerMockTest(' + oi + ')">' + opt + '</div>';
+            }).join('')}
+        </div>
+    `;
+    
+    const nextBtn = document.getElementById('mocktestNextBtn');
+    if (_mockTestAnswers[_mockTestIndex] !== undefined) {
+        nextBtn.textContent = _mockTestIndex >= _mockTest.length - 1 ? '🏆 Xem ket qua' : 'Câu tiếp →';
+        nextBtn.disabled = false;
+    } else {
+        nextBtn.disabled = true;
+    }
+    
+    document.getElementById('testTimer').textContent = '⏱ ' + _mockTestIndex + '/' + _mockTest.length;
+}
+
+function answerMockTest(oi) {
+    const q = _mockTest[_mockTestIndex];
+    _mockTestAnswers[_mockTestIndex] = q.options[oi];
+    
+    // Show correct/incorrect
+    const options = document.querySelectorAll('.mocktest-option');
+    options.forEach((el, i) => {
+        el.onclick = null;
+        if (q.options[i] === q.correct) el.classList.add('correct');
+        else if (i === oi && q.options[i] !== q.correct) el.classList.add('incorrect');
+    });
+    
+    document.getElementById('mocktestNextBtn').disabled = false;
+    document.getElementById('mocktestNextBtn').textContent = _mockTestIndex >= _mockTest.length - 1 ? '🏆 Xem ket qua' : 'Câu tiếp →';
+}
+
+function nextMockTestQuestion() {
+    if (_mockTestAnswers[_mockTestIndex] === undefined) return;
+    _mockTestIndex++;
+    if (_mockTestIndex >= _mockTest.length) {
+        finishMockTest();
+    } else {
+        renderMockTestQuestion();
+    }
+}
+
+function goToMockTestQuestion(idx) {
+    if (idx >= 0 && idx < _mockTest.length) {
+        _mockTestIndex = idx;
+        renderMockTestQuestion();
+    }
+}
+
+function finishMockTest() {
+    let correct = 0;
+    _mockTest.forEach((q, i) => {
+        if (_mockTestAnswers[i] === q.correct) correct++;
+    });
+    
+    const total = _mockTest.length;
+    const pct = Math.round(correct/total*100);
+    const passed = correct >= Math.ceil(total * 0.7);
+    
+    // Award XP
+    const xpGained = correct * 5;
+    addXP(xpGained);
+    markStudiedToday();
+    const newAch = checkAchievements();
+    saveState();
+    
+    document.getElementById('mocktestArea').style.display = 'none';
+    document.getElementById('mocktestResult').style.display = 'block';
+    
+    let gradeEmoji, gradeText, gradeColor;
+    if (pct >= 90) { gradeEmoji = '🏆'; gradeText = 'Xuat sac!'; gradeColor = '#2e7d32'; }
+    else if (pct >= 70) { gradeEmoji = '🎉'; gradeText = 'Dat yeu cau!'; gradeColor = '#1565c0'; }
+    else if (pct >= 50) { gradeEmoji = '💪'; gradeText = 'Co co gang!'; gradeColor = '#e65100'; }
+    else { gradeEmoji = '😅'; gradeText = 'Can on tap them!'; gradeColor = '#c62828'; }
+    
+    document.getElementById('mocktestResult').innerHTML = `
+        <div style="text-align:center;padding:40px;">
+            <div style="font-size:72px;margin-bottom:16px;">${gradeEmoji}</div>
+            <h2 style="color:${gradeColor};">${gradeText}</h2>
+            <div style="font-size:48px;font-weight:700;margin:16px 0;font-family:var(--header-font);">${correct}/${total}</div>
+            <div style="font-size:18px;color:var(--text-secondary);margin-bottom:8px;">${pct}% dung</div>
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">+${xpGained}XP</div>
+            <div style="height:12px;background:var(--bg);border-radius:6px;max-width:300px;margin:0 auto 20px;overflow:hidden;">
+                <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${gradeColor},${passed ? '#2e7d32' : '#e53935'});border-radius:6px;transition:width 0.8s;"></div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <button class="action-btn primary" onclick="startMockTest()" style="font-size:16px;padding:14px 28px;">🔄 Lam lai</button>
+                <button class="action-btn secondary" onclick="navigateTo('lessons')">📖 Hoc bai</button>
+                <button class="action-btn outline" onclick="restartMockTestWrong()">📝 Xem lai cau sai</button>
+            </div>
+        </div>
+    `;
+    
+    updateDashboard(); updateGameUI();
+    
+    if (passed) {
+        celebrate('🎉 ' + correct + '/' + total + '! +' + xpGained + 'XP!');
+    }
+    if (newAch.length > 0) {
+        setTimeout(() => newAch.forEach(id => {
+            const a = ACHIEVEMENTS_LIST.find(x => x.id === id);
+            if (a) celebrate(a.icon + ' ' + a.name + '! ' + a.desc);
+        }), 1500);
+    }
+}
+
+function restartMockTestWrong() {
+    // Filter to only wrong answers
+    const wrong = _mockTest.filter((q, i) => _mockTestAnswers[i] !== q.correct);
+    if (wrong.length === 0) {
+        celebrate('🎉 Khong co cau sai! Ban gioi qua!');
+        return;
+    }
+    _mockTest = wrong;
+    _mockTestIndex = 0;
+    _mockTestAnswers = {};
+    
+    document.getElementById('mocktestStart').style.display = 'none';
+    document.getElementById('mocktestArea').style.display = 'block';
+    document.getElementById('mocktestResult').style.display = 'none';
+    renderMockTestQuestion();
+}
+
 // ===== EXPORT =====
 window.navigateTo = navigateTo; window.openLesson = openLesson; window.closeLesson = closeLesson;
 window.completeLesson = completeLesson; window.nextLesson = nextLesson; window.prevLesson = prevLesson;
@@ -991,5 +1384,8 @@ window.filterVocab = filterVocab; window.renderLessonList = renderLessonList;
 window.answerQuiz = answerQuiz; window.showLessonQuiz = showLessonQuiz;
 window.sendToAI = sendToAI; window.saveApiKey = saveApiKey; window.resetApiKey = resetApiKey;
 window.speakKorean = speakKorean; window.playListeningExercise = playListeningExercise; window.checkListeningAnswer = checkListeningAnswer;
+window.loadReading = loadReading; window.selectReadingOption = selectReadingOption; window.checkReading = checkReading;
+window.loadWriting = loadWriting; window.checkWriting = checkWriting; window.showWritingAnswer = showWritingAnswer;
+window.startMockTest = startMockTest; window.answerMockTest = answerMockTest; window.nextMockTestQuestion = nextMockTestQuestion; window.restartMockTestWrong = restartMockTestWrong;
 
 console.log('🎮 Korean Quest loaded! Level', state.level, '•', state.xp, 'XP');

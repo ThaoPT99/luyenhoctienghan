@@ -116,23 +116,38 @@ const lessonsData = [
             { kr: '감사합니다', pronunciation: '[gamsahamnida]', meaning: 'Cảm ơn' },
             { kr: '네', pronunciation: '[ne]', meaning: 'Vâng/Có' }, { kr: '아니요', pronunciation: '[aniyo]', meaning: 'Không' },
             { kr: '저', pronunciation: '[jeo]', meaning: 'Tôi' }, { kr: '이름', pronunciation: '[ireum]', meaning: 'Tên' },
-            { kr: '죄송합니다', pronunciation: '[joesonghamnida]', meaning: 'Xin lỗi' }
+            { kr: '죄송합니다', pronunciation: '[joesonghamnida]', meaning: 'Xin lỗi' },
+            { kr: '학생', pronunciation: '[haksaeng]', meaning: 'Học sinh' },
+            { kr: '선생님', pronunciation: '[seonsaengnim]', meaning: 'Giáo viên' },
+            { kr: '회사원', pronunciation: '[hoesawon]', meaning: 'Nhân viên văn phòng' },
+            { kr: '의사', pronunciation: '[uisa]', meaning: 'Bác sĩ' },
+            { kr: '만나다', pronunciation: '[mannada]', meaning: 'Gặp' },
+            { kr: '반갑다', pronunciation: '[bangapda]', meaning: 'Vui mừng' },
+            { kr: '소개하다', pronunciation: '[sogaehada]', meaning: 'Giới thiệu' },
+            { kr: '사람', pronunciation: '[saram]', meaning: 'Người' },
+            { kr: '나라', pronunciation: '[nara]', meaning: 'Đất nước' },
+            { kr: '베트남', pronunciation: '[beteunam]', meaning: 'Việt Nam' }
         ],
         grammar: [
-            { title: '~입니다 / 입니까?', content: '"~입니다" = "là..." (trang trọng). "~입니까?" = "có phải là...?". VD: 저는 학생입니다. 한국 사람입니까?' },
-            { title: 'Tiểu từ ~은/는', content: 'Gắn sau danh từ chỉ chủ đề. ~은 (phụ âm cuối), ~는 (nguyên âm cuối). VD: 저는, 책은.' }
+            { title: '~입니다 / 입니까?', content: '"~입니다" = "là..." (trang trọng). "~입니까?" = "có phải là...?". VD: 저는 학생입니다(Toi la hoc sinh). 한국 사람입니까?(Co phai nguoi Han khong?)' },
+            { title: 'Tiểu từ ~은/는', content: 'Gắn sau danh từ chỉ chủ đề. ~은 (khi danh từ có phụ âm cuối), ~는 (khi danh từ có nguyên âm cuối). VD: 저는(Toi), 책은(sach), 가방은(cap sach).' },
+            { title: '~이/가 아니에요', content: 'Phủ định của ~이에요/예요. "Không phải là..." Vd: 학생이 아니에요(Khong phai la hoc sinh). 한국 사람이 아니에요(Khong phai nguoi Han).' }
         ],
         examples: [
             { kr: '안녕하세요, 저는 마이클입니다.', vi: 'Xin chào, tôi là Michael.' },
             { kr: '만나서 반갑습니다.', vi: 'Rất vui gặp bạn.' },
-            { kr: '감사합니다.', vi: 'Cảm ơn.' }
+            { kr: '감사합니다.', vi: 'Cảm ơn.' },
+            { kr: '저는 한국 사람이 아닙니다.', vi: 'Tôi không phải là người Hàn Quốc.' },
+            { kr: '선생님, 안녕하세요?', vi: 'Thưa thầy/cô, xin chào ạ!' }
         ],
         dialogues: [
             { kr: '안녕하세요? 저는 미나예요.', vi: 'Xin chào, tôi là Mina.', role: 'a' },
             { kr: '네 안녕하세요. 저는 수진이에요.', vi: 'Vâng xin chào, tôi là Sujin.', role: 'b' },
             { kr: '만나서 반가워요!', vi: 'Rất vui gặp bạn!', role: 'a' },
             { kr: '저도 반가워요. 한국 사람이에요?', vi: 'Tôi cũng vui. Bạn là người Hàn à?', role: 'b' },
-            { kr: '아니요, 베트남 사람이에요.', vi: 'Không, tôi là người Việt Nam.', role: 'a' }
+            { kr: '아니요, 베트남 사람이에요.', vi: 'Không, tôi là người Việt Nam.', role: 'a' },
+            { kr: '저는 학생이에요. 수진 씨는요?', vi: 'Tôi là học sinh. Còn Sujin?', role: 'a' },
+            { kr: '저는 회사원이에요.', vi: 'Tôi là nhân viên văn phòng.', role: 'b' }
         ]
     },
     {
@@ -144,14 +159,22 @@ const lessonsData = [
             { kr: '삼', pronunciation: '[sam]', meaning: '3' }, { kr: '사', pronunciation: '[sa]', meaning: '4' },
             { kr: '오', pronunciation: '[o]', meaning: '5' }, { kr: '육', pronunciation: '[yuk]', meaning: '6' },
             { kr: '칠', pronunciation: '[chil]', meaning: '7' }, { kr: '팔', pronunciation: '[pal]', meaning: '8' },
-            { kr: '구', pronunciation: '[gu]', meaning: '9' }, { kr: '십', pronunciation: '[sip]', meaning: '10' }
+            { kr: '구', pronunciation: '[gu]', meaning: '9' }, { kr: '십', pronunciation: '[sip]', meaning: '10' },
+            { kr: '백', pronunciation: '[baek]', meaning: '100' }, { kr: '천', pronunciation: '[cheon]', meaning: '1000' },
+            { kr: '만', pronunciation: '[man]', meaning: '10000' }, { kr: '년', pronunciation: '[nyeon]', meaning: 'Năm' },
+            { kr: '월', pronunciation: '[wol]', meaning: 'Tháng' }, { kr: '일', pronunciation: '[il]', meaning: 'Ngày' },
+            { kr: '원', pronunciation: '[won]', meaning: 'Won (tiền Hàn)' }, { kr: '전화번호', pronunciation: '[jeonhwabeonho]', meaning: 'Số điện thoại' },
+            { kr: '가격', pronunciation: '[gagyeok]', meaning: 'Giá cả' }, { kr: '얼마', pronunciation: '[eolma]', meaning: 'Bao nhiêu tiền' }
         ],
         grammar: [
-            { title: 'Số Hán-Hàn', content: 'Dùng cho: số điện thoại, ngày tháng, năm, tiền, phút. 일(1), 이(2), 삼(3), 사(4), 오(5), 육(6), 칠(7), 팔(8), 구(9), 십(10). 십일(11), 이십(20)...' }
+            { title: 'Số Hán-Hàn', content: 'Dùng cho: số điện thoại, ngày tháng, năm, tiền, phút. 일(1), 이(2), 삼(3), 사(4), 오(5), 육(6), 칠(7), 팔(8), 구(9), 십(10). Số lớn: 십일(11), 이십(20), 삼십삼(33), 백(100), 천(1000), 만(10000). VD: 2024년→이천이십사년.' },
+            { title: 'Cấu trúc hỏi giá', content: '"N + 은/는 얼마입니까?" = "Cái N giá bao nhiêu?" VD: 이 책은 얼마입니까?(Cuon sach nay bao nhieu tien?) 사과 한 개는 얼마예요?(Mot qua tao gia bao nhieu?)' }
         ],
         examples: [
             { kr: '전화번호는 010-1234-5678이에요.', vi: 'SĐT là 010-1234-5678.' },
-            { kr: '오늘은 6월 28일이에요.', vi: 'Hôm nay 28/6.' }
+            { kr: '오늘은 6월 28일이에요.', vi: 'Hôm nay 28/6.' },
+            { kr: '이것은 5000원이에요.', vi: 'Cái này 5000 won.' },
+            { kr: '한국에 2023년에 왔어요.', vi: 'Tôi đến Hàn năm 2023.' }
         ]
     },
     {
@@ -163,14 +186,24 @@ const lessonsData = [
             { kr: '셋', pronunciation: '[set]', meaning: '3' }, { kr: '넷', pronunciation: '[net]', meaning: '4' },
             { kr: '다섯', pronunciation: '[daseot]', meaning: '5' }, { kr: '여섯', pronunciation: '[yeoseot]', meaning: '6' },
             { kr: '일곱', pronunciation: '[ilgop]', meaning: '7' }, { kr: '여덟', pronunciation: '[yeodeol]', meaning: '8' },
-            { kr: '아홉', pronunciation: '[ahop]', meaning: '9' }, { kr: '열', pronunciation: '[yeol]', meaning: '10' }
+            { kr: '아홉', pronunciation: '[ahop]', meaning: '9' }, { kr: '열', pronunciation: '[yeol]', meaning: '10' },
+            { kr: '스물', pronunciation: '[seumul]', meaning: '20' }, { kr: '서른', pronunciation: '[seoreun]', meaning: '30' },
+            { kr: '마흔', pronunciation: '[maheun]', meaning: '40' }, { kr: '쉰', pronunciation: '[swin]', meaning: '50' },
+            { kr: '개', pronunciation: '[gae]', meaning: 'Cái (từ đếm)' },
+            { kr: '명', pronunciation: '[myeong]', meaning: 'Người (từ đếm)' },
+            { kr: '시', pronunciation: '[si]', meaning: 'Giờ' }, { kr: '분', pronunciation: '[bun]', meaning: 'Phút' },
+            { kr: '살', pronunciation: '[sal]', meaning: 'Tuổi' }
         ],
         grammar: [
-            { title: 'Số thuần Hàn', content: 'Dùng cho: giờ, tuổi, đếm đồ vật + từ đếm. Từ đếm: 개(cái), 명(người), 권(quyển), 병(chai), 잔(cốc). VD: 사과 세 개(3 quả táo), 사람 두 명(2 người).' }
+            { title: 'Số thuần Hàn & từ đếm', content: 'Dùng cho: giờ, tuổi, số lượng đồ vật. Khi đếm: 하나→한, 둘→두, 셋→세, 넷→네, 스물→스무 (trước từ đếm). Từ đếm phổ biến: 개(cái), 명(người), 권(quyển sách), 병(chai), 잔(cốc), 마리(con vật). VD: 사과 세 개(3 qua tao), 사람 두 명(2 nguoi), 커피 한 잔(1 coc cafe).' },
+            { title: 'Hỏi số lượng', content: '"몇 + từ đếm" = "mấy...". VD: 몇 개입니까?(Máy cai?), 몇 명이에요?(Máy nguoi?), 몇 시예요?(Máy gio?). Khi trả lời số 1-4: 한개, 두개, 세개, 네개.' }
         ],
         examples: [
             { kr: '사과 세 개 주세요.', vi: 'Cho tôi 3 quả táo.' },
-            { kr: '지금 3시예요.', vi: 'Bây giờ 3 giờ.' }
+            { kr: '지금 3시예요.', vi: 'Bây giờ 3 giờ.' },
+            { kr: '저는 스물다섯 살이에요.', vi: 'Tôi 25 tuổi.' },
+            { kr: '몇 시에 만나요?', vi: 'Mấy giờ gặp nhau?' },
+            { kr: '커피 한 잔 주세요.', vi: 'Cho tôi một cốc cà phê.' }
         ]
     },
     {
@@ -343,40 +376,72 @@ const lessonsData = [
     // ===== STAGE 3: SƠ CẤP 2 → TOPIK 1 (Bài 16-30) =====
     {
         id: 16, title: 'Động từ bất quy tắc ㄷ, ㅂ, ㅅ',
-        description: 'ㄷ→ㄹ, ㅂ→ㅜ/ㅗ, ㅅ→脱落 khi chia động từ',
+        description: 'ㄷ→ㄹ, ㅂ→ㅜ/ㅗ, ㅅ→rụng khi chia động từ',
         level: '🟡 GĐ 3: Sơ cấp 2', stage: 3,
         vocab: [
             { kr: '듣다', pronunciation: '[deutda]', meaning: 'nghe (ㄷ→ㄹ: 들어요)' },
             { kr: '걷다', pronunciation: '[geotda]', meaning: 'đi bộ (걸어요)' },
             { kr: '돕다', pronunciation: '[dopda]', meaning: 'giúp (ㅂ→와: 도와요)' },
             { kr: '춥다', pronunciation: '[chupda]', meaning: 'lạnh (추워요)' },
-            { kr: '짓다', pronunciation: '[jitda]', meaning: 'xây (ㅅ탈락: 지어요)' }
+            { kr: '짓다', pronunciation: '[jitda]', meaning: 'xây (ㅅ탈락: 지어요)' },
+            { kr: '깨닫다', pronunciation: '[kkaedatda]', meaning: 'nhận ra (깨달아요)' },
+            { kr: '싣다', pronunciation: '[sitda]', meaning: 'chở, load (실어요)' },
+            { kr: '가볍다', pronunciation: '[gabyeopda]', meaning: 'nhẹ (가벼워요)' },
+            { kr: '덥다', pronunciation: '[deopda]', meaning: 'nóng (더워요)' },
+            { kr: '붓다', pronunciation: '[butda]', meaning: 'đổ, sưng (부어요)' }
         ],
         grammar: [
-            { title: 'Bất quy tắc', content: 'ㄷ→ㄹ: 듣다→들어요. ㅂ→ㅜ/ㅗ: 돕다→도와요, 춥다→추워요. ㅅ탈락: 짓다→지어요. Cần học thuộc các ngoại lệ!' }
+            { title: 'Bất quy tắc ㄷ', content: 'ㄷ→ㄹ khi gặp nguyên âm: 듣다→들어요, 걷다→걸어요, 깨닫다→깨달아요. Ngoại lệ: 받다(nhận) KHÔNG đổi: 받아요.' },
+            { title: 'Bất quy tắc ㅂ', content: 'ㅂ→ㅜ/ㅗ khi gặp nguyên âm: 돕다→도와요, 춥다→추워요, 가볍다→가벼워요. Ngoại lệ: 좁다(hẹp), 넓다(rộng) KHÔNG đổi: 좁아요.' },
+            { title: 'Bất quy tắc ㅅ', content: 'ㅅ rụng (탈락) khi gặp nguyên âm: 짓다→지어요, 붓다→부어요. Ngoại lệ: 벗다(cởi) KHÔNG đổi: 벗어요.' }
         ],
         examples: [
             { kr: '음악을 들어요.', vi: 'Nghe nhạc.' },
-            { kr: '날씨가 추워요.', vi: 'Thời tiết lạnh.' }
+            { kr: '날씨가 추워요.', vi: 'Thời tiết lạnh.' },
+            { kr: '아침에 일어나서 학교에 걸어요.', vi: 'Sáng dậy và đi bộ đến trường.' },
+            { kr: '집을 지어요.', vi: 'Xây nhà.' }
+        ],
+        reading: '안녕하세요, 저는 수진이에요. 오늘은 날씨가 추워요. 그래도 저는 학교에 걸어가요. 학교에서 음악을 들어요. 한국어를 공부해요. 친구를 도와요. 저는 집에서 한국 음식을 만들어요. 김치도 만들어요. 맛있어요!',
+        readingQuestions: [
+            { q: 'Sujin đi đến trường bằng cách nào?', options: ['Xe buýt', 'Đi bộ', 'Xe hơi', 'Tàu điện'], answer: 1 },
+            { q: 'Thời tiết hôm nay thế nào?', options: ['Nóng', 'Mát', 'Lạnh', 'Mưa'], answer: 2 },
+            { q: 'Sujin làm gì ở trường?', options: ['Nghe nhạc + học', 'Chơi game', 'Ngủ', 'Ăn'], answer: 0 },
+            { q: 'Sujin làm món gì ở nhà?', options: ['Bánh mì', 'Kimchi', 'Cơm', 'Lẩu'], answer: 1 }
         ]
     },
     {
         id: 17, title: 'Bất quy tắc ㅎ, 르, 으',
-        description: 'ㅎ→탈락, 르→ㄹㄹ, 으→어/아',
+        description: 'ㅎ→rụng, 르→ㄹㄹ, 으→어/아',
         level: '🟡 GĐ 3: Sơ cấp 2', stage: 3,
         vocab: [
             { kr: '빨갛다', pronunciation: '[ppalgata]', meaning: 'đỏ (빨개요)' },
             { kr: '그렇다', pronunciation: '[geureota]', meaning: 'như thế (그래요)' },
             { kr: '모르다', pronunciation: '[moreuda]', meaning: 'không biết (몰라요)' },
             { kr: '고르다', pronunciation: '[goreuda]', meaning: 'chọn (골라요)' },
-            { kr: '예쁘다', pronunciation: '[yeppeuda]', meaning: 'đẹp (예뻐요)' }
+            { kr: '예쁘다', pronunciation: '[yeppeuda]', meaning: 'đẹp (예뻐요)' },
+            { kr: '이르다', pronunciation: '[ireuda]', meaning: 'sớm (일러요)' },
+            { kr: '노랗다', pronunciation: '[norata]', meaning: 'vàng (노래요)' },
+            { kr: '어떻다', pronunciation: '[eotteota]', meaning: 'thế nào (어때요)' },
+            { kr: '슬프다', pronunciation: '[seulpeuda]', meaning: 'buồn (슬퍼요)' },
+            { kr: '배고프다', pronunciation: '[baegopeuda]', meaning: 'đói (배고파요)' }
         ],
         grammar: [
-            { title: 'Bất quy tắc tiếp', content: 'ㅎ탈락: 빨갛다→빨개요. 르→ㄹㄹ: 모르다→몰라요. 으→어: 예쁘다→예뻐요.' }
+            { title: 'Bất quy tắc ㅎ', content: 'ㅎ rụng khi gặp nguyên âm: 빨갛다→빨개요, 그렇다→그래요, 노랗다→노래요, 어떻다→어때요. Tính từ màu sắc thường bị ㅎ탈락.' },
+            { title: 'Bất quy tắc 르', content: '르→ㄹㄹ (thêm ㄹ): 모르다→몰라요, 고르다→골라요, 이르다→일러요. Gốc 르 + 아/어 → ㄹ라/ㄹ러.' },
+            { title: 'Bất quy tắc 으', content: '으 rụng, thêm 어/아 tùy nguyên âm trước: 예쁘다→예뻐요, 슬프다→슬퍼요, 배고프다→배고파요. Nếu gốc có ㅏ thì + 아, không thì + 어.' }
         ],
         examples: [
             { kr: '이름을 몰라요.', vi: 'Tôi không biết tên.' },
-            { kr: '꽃이 예뻐요.', vi: 'Hoa đẹp.' }
+            { kr: '꽃이 예뻐요.', vi: 'Hoa đẹp.' },
+            { kr: '노란 색이 좋아요. 그래요?', vi: 'Màu vàng tốt. Thế à?' },
+            { kr: '배고파요. 밥 먹어요.', vi: 'Đói bụng quá. Ăn cơm thôi.' }
+        ],
+        reading: '오늘 친구와 함께 쇼핑을 해요. 옷 가게에 있어요. 빨간색 옷이 있어요. 노란색 옷도 있어요. 친구가 "어떤 색이 좋아요?"라고 물어봐요. 저는 "빨간색이 예뻐요"라고 대답해요. 그런데 가격을 몰라요. 점원에게 물어봐요. "이 옷은 얼마예요?" 점원이 "2만 원이에요"라고 해요. 비싸지 않아요. 저는 빨간색 옷을 골라요. 기분이 좋아요!',
+        readingQuestions: [
+            { q: 'Hai người đang ở đâu?', options: ['Trường học', 'Cửa hàng quần áo', 'Nhà hàng', 'Thư viện'], answer: 1 },
+            { q: 'Người nói thích màu nào?', options: ['Vàng', 'Xanh', 'Đỏ', 'Đen'], answer: 2 },
+            { q: 'Giá của chiếc áo là bao nhiêu?', options: ['1 vạn won', '2 vạn won', '3 vạn won', '5 vạn won'], answer: 1 },
+            { q: 'Người nói có biết giá trước khi hỏi không?', options: ['Có biết', 'Không biết', 'Không quan tâm', 'Đã đoán'], answer: 1 }
         ]
     },
     {
@@ -385,14 +450,27 @@ const lessonsData = [
         level: '🟡 GĐ 3: Sơ cấp 2', stage: 3,
         vocab: [
             { kr: '읽다', pronunciation: '[ikda]', meaning: 'đọc' }, { kr: '쓰다', pronunciation: '[sseuda]', meaning: 'viết' },
-            { kr: '말하다', pronunciation: '[malhada]', meaning: 'nói' }, { kr: '기다리다', pronunciation: '[gidarida]', meaning: 'đợi' }
+            { kr: '말하다', pronunciation: '[malhada]', meaning: 'nói' }, { kr: '기다리다', pronunciation: '[gidarida]', meaning: 'đợi' },
+            { kr: '전화하다', pronunciation: '[jeonhwahada]', meaning: 'gọi điện' },
+            { kr: '운동하다', pronunciation: '[undonghada]', meaning: 'tập thể dục' },
+            { kr: '청소하다', pronunciation: '[cheongsohada]', meaning: 'dọn dẹp' },
+            { kr: '요리하다', pronunciation: '[yorihada]', meaning: 'nấu ăn' }
         ],
         grammar: [
-            { title: '~고 있다', content: 'Động từ + 고 있다 = đang làm gì. VD: 먹고 있다(đang ăn), 공부하고 있다(đang học). Phủ định: ~고 있지 않다.' }
+            { title: '~고 있다', content: 'Động từ + 고 있다 = đang làm gì. VD: 먹고 있다(đang ăn), 공부하고 있다(đang học). Rút gọn trong văn nói: ~고 있어요. Phủ định: ~고 있지 않다.' },
+            { title: 'Phân biệt ~는다 vs ~고 있다', content: '~는다: sự thật hiển nhiên/thói quen (매일 한국어를 공부한다). ~고 있다: đang làm ngay lúc nói (지금 한국어를 공부하고 있다).' }
         ],
         examples: [
             { kr: '지금 밥을 먹고 있어요.', vi: 'Bây giờ đang ăn cơm.' },
-            { kr: '한국어를 공부하고 있어요.', vi: 'Đang học tiếng Hàn.' }
+            { kr: '한국어를 공부하고 있어요.', vi: 'Đang học tiếng Hàn.' },
+            { kr: '지금 무엇을 하고 있어요?', vi: 'Bây giờ đang làm gì thế?' }
+        ],
+        reading: '지금 오후 3시예요. 저는 도서관에 있어요. 한국어 책을 읽고 있어요. 친구는 옆에서 숙제를 하고 있어요. 그런데 오늘 날씨가 더워요. 도서관에 에어컨이 없어요. 그래서 좀 힘들어요. 그래도 저는 한국어 공부를 계속하고 있어요. 친구는 "같이 커피 마실래요?"라고 물어봐요. 저는 "네, 좋아요!"라고 대답해요. 지금 쉬고 있어요!',
+        readingQuestions: [
+            { q: 'Người nói đang ở đâu?', options: ['Nhà', 'Thư viện', 'Quán cà phê', 'Trường'], answer: 1 },
+            { q: 'Người nói đang làm gì?', options: ['Viết thư', 'Đọc sách tiếng Hàn', 'Chơi game', 'Ngủ'], answer: 1 },
+            { q: 'Bạn của người nói đang làm gì?', options: ['Đọc sách', 'Làm bài tập', 'Ăn', 'Nói chuyện'], answer: 1 },
+            { q: 'Họ quyết định làm gì?', options: ['Về nhà', 'Đi uống cà phê', 'Đi ăn', 'Đi dạo'], answer: 1 }
         ]
     },
     {
@@ -403,14 +481,23 @@ const lessonsData = [
             { kr: '입어 보다', pronunciation: '[ibeo boda]', meaning: 'thử mặc' },
             { kr: '먹어 보다', pronunciation: '[meogeo boda]', meaning: 'thử ăn' },
             { kr: '놀러 가다', pronunciation: '[nolleo gada]', meaning: 'đi chơi' },
-            { kr: '배우러 가다', pronunciation: '[baeureo gada]', meaning: 'đi học' }
+            { kr: '배우러 가다', pronunciation: '[baeureo gada]', meaning: 'đi học' },
+            { kr: '해 보다', pronunciation: '[hae boda]', meaning: 'thử làm' },
+            { kr: '만나 보다', pronunciation: '[manna boda]', meaning: 'thử gặp' },
+            { kr: '사러 가다', pronunciation: '[sareo gada]', meaning: 'đi mua' },
+            { kr: '먹으러 가다', pronunciation: '[meogeureo gada]', meaning: 'đi ăn' },
+            { kr: '경험', pronunciation: '[gyeongheom]', meaning: 'kinh nghiệm' },
+            { kr: '추천', pronunciation: '[chucheon]', meaning: 'đề xuất' }
         ],
         grammar: [
-            { title: '~아/어 보다', content: 'Thử làm gì: 먹어 보다(thử ăn), 입어 보다(thử mặc). ~(으)러 가다: đi để làm gì: 먹으러 가다(đi ăn), 공부하러 가다(đi học).' }
+            { title: '~아/어 보다', content: 'Thử làm gì: 먹어 보다(thử ăn), 입어 보다(thử mặc), 해 보다(thử làm). Dùng quá khứ: ~아/어 봤다(đã thử). Phủ định: ~아/어 보지 않다.' },
+            { title: '~(으)러 가다/오다', content: 'Đi/đến để làm gì. Nguyên âm + 러: 가다→가러 가다(đi để đi). Phụ âm + 으러: 먹다→먹으러 가다(đi ăn). Chú ý: chỉ dùng với 가다, 오다, 다니다.' }
         ],
         examples: [
             { kr: '김치를 먹어 봤어요?', vi: 'Đã thử ăn kimchi chưa?' },
-            { kr: '도서관에 공부하러 가요.', vi: 'Đi thư viện để học.' }
+            { kr: '도서관에 공부하러 가요.', vi: 'Đi thư viện để học.' },
+            { kr: '한국에 가 보고 싶어요.', vi: 'Muốn thử đến Hàn.' },
+            { kr: '시장에 과일을 사러 가요.', vi: 'Đi chợ để mua trái cây.' }
         ]
     },
     {
@@ -421,14 +508,28 @@ const lessonsData = [
             { kr: '바쁘다', pronunciation: '[bappeuda]', meaning: 'bận' },
             { kr: '아프다', pronunciation: '[apeuda]', meaning: 'đau, ốm' },
             { kr: '피곤하다', pronunciation: '[pigonhada]', meaning: 'mệt' },
-            { kr: '재미있다', pronunciation: '[jaemiitda]', meaning: 'thú vị' }
+            { kr: '재미있다', pronunciation: '[jaemiitda]', meaning: 'thú vị' },
+            { kr: '늦다', pronunciation: '[neutda]', meaning: 'muộn, chậm' },
+            { kr: '힘들다', pronunciation: '[himdeulda]', meaning: 'vất vả' },
+            { kr: '쉽다', pronunciation: '[swipda]', meaning: 'dễ' },
+            { kr: '어렵다', pronunciation: '[eoryeopda]', meaning: 'khó' }
         ],
         grammar: [
-            { title: '~아/어서', content: 'Vì... nên...: 바빠서 못 가요(vì bận nên không đi được). 아파서 병원에 가요(vì đau nên đi bệnh viện). Lưu ý: không dùng với thì quá khứ.' }
+            { title: '~아/어서', content: 'Vì... nên...: 바빠서 못 가요(vì bận nên không đi được). 아파서 병원에 가요(vì đau nên đi bệnh viện). Lưu ý: KHÔNG dùng với thì quá khứ/ tương lai. Không dùng với ~ㅂ니다/습니다.' },
+            { title: 'So sánh ~아/어서 vs ~니까', content: '~아/어서: nguyên nhân khách quan, không dùng với câu mệnh lệnh/rủ rê. ~니까: nguyên nhân chủ quan, dùng được với mệnh lệnh, rủ rê. VD: 비가 오니까 우산을 가져가세요(Mưa rồi nên mang ô nhé).' }
         ],
         examples: [
             { kr: '바빠서 친구를 못 만나요.', vi: 'Vì bận nên không gặp bạn được.' },
-            { kr: '재미있어서 봤어요.', vi: 'Vì thú vị nên đã xem.' }
+            { kr: '재미있어서 봤어요.', vi: 'Vì thú vị nên đã xem.' },
+            { kr: '아파서 병원에 가요.', vi: 'Vì ốm nên đi bệnh viện.' },
+            { kr: '늦어서 죄송합니다.', vi: 'Xin lỗi vì đến muộn.' }
+        ],
+        readingsimple: '어제는 피곤해서 일찍 잤어요. 그런데 오늘은 아파서 병원에 가요. 병원이 집에서 멀어서 버스를 타요. 의사 선생님이 "약을 먹어야 해요"라고 말해요. 약을 먹고 좀 쉬었어요. 친구가 "같이 영화 볼래요?"라고 문자를 보냈어요. 그런데 저는 아파서 못 가요. "미안해요, 아파서 못 가요"라고 답장을 보냈어요. 친구가 "괜찮아, 다음에 보자"고 했어요. 좋은 친구가 있어서 다행이에요!',
+        readingQuestions: [
+            { q: 'Tại sao hôm qua người nói ngủ sớm?', options: ['Buồn ngủ', 'Mệt', 'Bận', 'Rảnh'], answer: 1 },
+            { q: 'Người nói đi đến bệnh viện bằng gì?', options: ['Xe buýt', 'Tàu điện', 'Taxi', 'Đi bộ'], answer: 0 },
+            { q: 'Tại sao người nói không đi xem phim?', options: ['Bận', 'Ốm', 'Không thích', 'Xa quá'], answer: 1 },
+            { q: 'Cảm xúc của người nói về bạn mình thế nào?', options: ['Buồn', 'May mắn vì có bạn tốt', 'Giận', 'Thất vọng'], answer: 1 }
         ]
     },
     {
@@ -457,14 +558,28 @@ const lessonsData = [
             { kr: '운전하다', pronunciation: '[unjeonhada]', meaning: 'lái xe' },
             { kr: '요리하다', pronunciation: '[yorihada]', meaning: 'nấu ăn' },
             { kr: '수영하다', pronunciation: '[suyeonghada]', meaning: 'bơi' },
-            { kr: '춤추다', pronunciation: '[chumchuda]', meaning: 'nhảy' }
+            { kr: '춤추다', pronunciation: '[chumchuda]', meaning: 'nhảy' },
+            { kr: '노래하다', pronunciation: '[noraehada]', meaning: 'hát' },
+            { kr: '그림을 그리다', pronunciation: '[geurimeul geurida]', meaning: 'vẽ tranh' },
+            { kr: '가능하다', pronunciation: '[ganeunghada]', meaning: 'có thể, khả thi' },
+            { kr: '불가능하다', pronunciation: '[bulganeunghada]', meaning: 'không thể' }
         ],
         grammar: [
-            { title: '~을/ㄹ 수 있다/없다', content: 'Có thể: 갈 수 있어요(có thể đi), 먹을 수 있어요(có thể ăn). Không thể: 못 가요 = 갈 수 없어요.' }
+            { title: '~을/ㄹ 수 있다/없다', content: 'Có thể: 갈 수 있어요(có thể đi), 먹을 수 있어요(có thể ăn). Không thể: 못 가요 = 갈 수 없어요. Lưu ý: "못" chỉ khả năng không thể do hoàn cảnh. "안" là chủ động không làm.' },
+            { title: 'Phân biệt 못 vs 안', content: '못: không thể do lý do khách quan (못 가요=không thể đi vì trời mưa). 안: chủ động không muốn làm (안 가요=không đi vì lười). Cả hai đều đứng trước động từ.' }
         ],
         examples: [
             { kr: '한국어를 할 수 있어요?', vi: 'Bạn có thể nói tiếng Hàn không?' },
-            { kr: '운전할 수 있어요.', vi: 'Tôi có thể lái xe.' }
+            { kr: '운전할 수 있어요.', vi: 'Tôi có thể lái xe.' },
+            { kr: '못 가요. 시간이 없어요.', vi: 'Không thể đi. Không có thời gian.' },
+            { kr: '한국 음식을 먹을 수 있어요?', vi: 'Bạn có thể ăn đồ Hàn không?' }
+        ],
+        reading: '저는 한국어를 할 수 있어요. 하지만 아직 잘하지는 못해요. 매일 공부하고 있어요. 친구 중에 한국에서 3년 살았던 사람이 있어요. 그 친구는 한국어를 아주 잘할 수 있어요. 저도 그 친구처럼 잘하고 싶어요. 그래서 매일 한국어로 일기를 써요. 처음에는 어려웠어요. 하지만 지금은 좀 더 잘 쓸 수 있어요. 저는 한국 음식을 요리할 수 있어요. 김치찌개를 만들 수 있어요. 친구들이 맛있다고 해요!',
+        readingQuestions: [
+            { q: 'Người nói có thể làm gì bằng tiếng Hàn?', options: ['Nói chuyện', 'Viết nhật ký', 'Nấu ăn', 'Tất cả đáp án'], answer: 3 },
+            { q: 'Bạn của người nói đã sống ở Hàn bao lâu?', options: ['1 năm', '2 năm', '3 năm', '5 năm'], answer: 2 },
+            { q: 'Người nói đánh giá thế nào về việc viết nhật ký ban đầu?', options: ['Dễ', 'Khó', 'Buồn chán', 'Vui'], answer: 1 },
+            { q: 'Người nói có thể nấu món gì?', options: ['Bibimbap', 'Kimchi jjigae', 'Bulgogi', 'Tteokbokki'], answer: 1 }
         ]
     },
     {
@@ -592,13 +707,27 @@ const lessonsData = [
         vocab: [
             { kr: 'TOPIK', pronunciation: '[topik]', meaning: 'kỳ thi năng lực tiếng Hàn' },
             { kr: '문제', pronunciation: '[munje]', meaning: 'câu hỏi, vấn đề' },
-            { kr: '정답', pronunciation: '[jeongdap]', meaning: 'đáp án đúng' }
+            { kr: '정답', pronunciation: '[jeongdap]', meaning: 'đáp án đúng' },
+            { kr: '오답', pronunciation: '[odap]', meaning: 'đáp án sai' },
+            { kr: '점수', pronunciation: '[jeomsu]', meaning: 'điểm số' },
+            { kr: '합격선', pronunciation: '[hapgyeokseon]', meaning: 'đường đỗ' },
+            { kr: '시험 보다', pronunciation: '[siheom boda]', meaning: 'thi' },
+            { kr: '준비하다', pronunciation: '[junbihada]', meaning: 'chuẩn bị' }
         ],
         grammar: [
-            { title: 'Chiến thuật TOPIK 1', content: 'Đọc: đọc câu hỏi trước, tìm từ khóa. Nghe: tập trung vào từ đầu và cuối câu. Mục tiêu: đỗ cấp 2 (130 điểm+/200).' }
+            { title: 'Chiến thuật TOPIK 1', content: 'Đọc: đọc câu hỏi trước, tìm từ khóa trong đoạn văn. Nghe: tập trung vào từ đầu và cuối câu. Mục tiêu: đỗ cấp 2 (130 điểm+/200).' },
+            { title: 'Cấu trúc đề TOPIK 1', content: 'Đọc(읽기): 40 câu - 70 phút. Nghe(듣기): 30 câu - 30 phút. Tổng 200 điểm. Cấp 1: 80 điểm+, Cấp 2: 140 điểm+. Dạng câu hỏi: chọn từ thích hợp, chủ đề, ý chính.' }
         ],
         examples: [
-            { kr: 'TOPIK 1 시험: 읽기 40문제, 듣기 30문제', vi: 'TOPIK 1: 40 câu đọc, 30 câu nghe.' }
+            { kr: 'TOPIK 1 시험: 읽기 40문제, 듣기 30문제', vi: 'TOPIK 1: 40 câu đọc, 30 câu nghe.' },
+            { kr: '합격하려면 열심히 준비해야 해요.', vi: 'Để đỗ phải chuẩn bị chăm chỉ.' }
+        ],
+        reading: 'TOPIK 1 시험을 준비하고 있어요. 한국어를 공부한 지 6개월이 됐어요. 친구가 "TOPIK 1이 어때요?"라고 물어봐요. 저는 "생각보다 쉬워요. 하지만 문법이 좀 어려워요"라고 대답해요. 읽기 시험은 40문제예요. 70분 동안 풀어야 해요. 저는 읽기가 좋아요. 그런데 듣기가 좀 어려워요. 한국 사람이 빨리 말해서 잘 못 알아들어요. 그래서 매일 한국 드라마를 봐요. 한국어 노래도 들어요. 이 방법이 도움이 많이 돼요! 목표는 TOPIK 1 합격이에요. 6개월 후에 시험을 볼 거예요!',
+        readingQuestions: [
+            { q: 'Người nói đã học tiếng Hàn bao lâu?', options: ['3 tháng', '6 tháng', '1 năm', '2 năm'], answer: 1 },
+            { q: 'Phần nào khó hơn đối với người nói?', options: ['Đọc', 'Nghe', 'Viết', 'Ngữ pháp'], answer: 1 },
+            { q: 'Người nói làm gì để cải thiện kỹ năng?', options: ['Học thuộc lòng', 'Xem phim + nghe nhạc Hàn', 'Đi Hàn Quốc', 'Học với gia sư'], answer: 1 },
+            { q: 'Bao lâu nữa người nói sẽ thi?', options: ['3 tháng', '6 tháng', '1 tháng', '1 năm'], answer: 1 }
         ]
     },
 
@@ -611,14 +740,30 @@ const lessonsData = [
             { kr: '보이다', pronunciation: '[boida]', meaning: 'nhìn thấy (bị động của 보다)' },
             { kr: '들리다', pronunciation: '[deullida]', meaning: 'nghe thấy (듣다)' },
             { kr: '닫히다', pronunciation: '[dachida]', meaning: 'bị đóng (닫다)' },
-            { kr: '열리다', pronunciation: '[yeollida]', meaning: 'được mở (열다)' }
+            { kr: '열리다', pronunciation: '[yeollida]', meaning: 'được mở (열다)' },
+            { kr: '쓰이다', pronunciation: '[sseuida]', meaning: 'được viết (쓰다)' },
+            { kr: '팔리다', pronunciation: '[pallida]', meaning: 'được bán (팔다)' },
+            { kr: '끊기다', pronunciation: '[kkeunkkida]', meaning: 'bị đứt (끊다)' },
+            { kr: '잠기다', pronunciation: '[jamgida]', meaning: 'bị khóa (잠그다)' },
+            { kr: '걸리다', pronunciation: '[geollida]', meaning: 'bị mắc (걸다)' },
+            { kr: '바뀌다', pronunciation: '[bakkuda]', meaning: 'bị thay đổi (바꾸다)' }
         ],
         grammar: [
-            { title: 'Bị động', content: 'Thêm 이/히/리/기 vào gốc động từ. 보다→보이다(được nhìn), 듣다→들리다(được nghe), 닫다→닫히다(bị đóng), 열다→열리다(được mở).' }
+            { title: 'Bị động', content: 'Thêm 이/히/리/기 vào gốc động từ. Quy tắc: - 받침 ㄱ,ㄷ,ㅂ + 히: 닫다→닫히다. - 받침 ㄹ + 리: 열다→열리다. - 받침 khác + 이/기: 보다→보이다, 쓰다→쓰이다. Không phải động từ nào cũng có thể chia bị động.' },
+            { title: 'Cách dùng bị động', content: 'Chủ ngữ là đối tượng bị tác động. VD: 문이 닫혔어요(Cửa đã bị đóng). Không cần nêu người thực hiện. Dùng nhiều trong văn viết và tin tức.' }
         ],
         examples: [
             { kr: '산이 보여요.', vi: 'Núi được nhìn thấy.' },
-            { kr: '문이 열렸어요.', vi: 'Cửa đã được mở.' }
+            { kr: '문이 열렸어요.', vi: 'Cửa đã được mở.' },
+            { kr: '편지가 쓰였어요.', vi: 'Bức thư đã được viết.' },
+            { kr: '그 책이 많이 팔렸어요.', vi: 'Cuốn sách đó đã bán được nhiều.' }
+        ],
+        reading: '어제 도서관에 갔어요. 그런데 도서관 문이 닫혔어요. "왜 문이 닫혔지?" 이상하다고 생각했어요. 휴일이 아니었거든요. 나중에 알게 됐어요. 오전에 수도관이 끊겨서 도서관이 갑자기 닫혔다고 해요. 그래서 집으로 돌아왔어요. 그런데 집에 가는 길에 예쁜 공원이 보였어요. 그 공원은 작년에 새로 열렸어요. 나무가 많이 심어졌고 꽃도 예뻤어요. 공원 벤치에 앉아서 책을 읽었어요. 조용하고 좋았어요!',
+        readingQuestions: [
+            { q: 'Tại sao thư viện đóng cửa?', options: ['Ngày lễ', 'Ống nước bị vỡ', 'Sửa chữa', 'Hết giờ'], answer: 1 },
+            { q: 'Người nói nhìn thấy gì trên đường về?', options: ['Siêu thị', 'Công viên đẹp', 'Nhà hàng', 'Rạp phim'], answer: 1 },
+            { q: 'Công viên đó được xây dựng khi nào?', options: ['Năm nay', 'Năm ngoái', 'Tháng trước', 'Tuần trước'], answer: 1 },
+            { q: 'Người nói đã làm gì ở công viên?', options: ['Đi dạo', 'Đọc sách', 'Ăn trưa', 'Chụp ảnh'], answer: 1 }
         ]
     },
     {
