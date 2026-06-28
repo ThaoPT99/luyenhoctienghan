@@ -192,6 +192,7 @@ function navigateTo(tab) {
     if (tab === 'roadmap') renderRoadmap();
     if (tab === 'progress') updateProgress();
     if (tab === 'vocabulary') renderVocab();
+    if (tab === 'listening') setTimeout(playListeningExercise, 300);
 }
 
 // ===== DASHBOARD =====
@@ -795,8 +796,6 @@ function playListeningExercise() {
 
 function checkListeningAnswer(answer) {
     const fb = document.getElementById('listeningFeedback');
-    fb.style.display = 'block';
-    
     if (answer === _listenAnswer) {
         fb.textContent = '✅ Đúng! +5XP 🎮'; fb.className = 'exercise-feedback show correct';
         state.exerciseScore.correct++; state.totalCorrect++;
@@ -837,7 +836,7 @@ function speakKorean(text, speed = 0.8) {
     const voices = window.speechSynthesis.getVoices();
     const koreanVoice = voices.find(v => v.lang.startsWith('ko'));
     if (koreanVoice) utterance.voice = koreanVoice;
-    speechSynthesis.speak(utterance);
+    window.speechSynthesis.speak(utterance);
 }
 
 // Load voices when they're ready
