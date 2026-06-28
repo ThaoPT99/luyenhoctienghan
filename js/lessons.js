@@ -60,6 +60,10 @@ const lessonsData = [
         examples: [
             { kr: '아', vi: 'a — thán từ' }, { kr: '오', vi: 'o — số 5' },
             { kr: '이', vi: 'i — răng, cái này' }, { kr: '우', vi: 'u — bên phải' }
+        ],
+        dialogues: [
+            { kr: '아, 한국어!', vi: 'A, tiếng Hàn!', role: 'a' },
+            { kr: '네, 한국어예요.', vi: 'Vâng, là tiếng Hàn.', role: 'b' }
         ]
     },
     {
@@ -122,6 +126,13 @@ const lessonsData = [
             { kr: '안녕하세요, 저는 마이클입니다.', vi: 'Xin chào, tôi là Michael.' },
             { kr: '만나서 반갑습니다.', vi: 'Rất vui gặp bạn.' },
             { kr: '감사합니다.', vi: 'Cảm ơn.' }
+        ],
+        dialogues: [
+            { kr: '안녕하세요? 저는 미나예요.', vi: 'Xin chào, tôi là Mina.', role: 'a' },
+            { kr: '네 안녕하세요. 저는 수진이에요.', vi: 'Vâng xin chào, tôi là Sujin.', role: 'b' },
+            { kr: '만나서 반가워요!', vi: 'Rất vui gặp bạn!', role: 'a' },
+            { kr: '저도 반가워요. 한국 사람이에요?', vi: 'Tôi cũng vui. Bạn là người Hàn à?', role: 'b' },
+            { kr: '아니요, 베트남 사람이에요.', vi: 'Không, tôi là người Việt Nam.', role: 'a' }
         ]
     },
     {
@@ -269,6 +280,12 @@ const lessonsData = [
             { kr: '학교에 가요.', vi: 'Tôi đi học.' },
             { kr: '김치를 먹어요.', vi: 'Tôi ăn kimchi.' },
             { kr: '한국어를 공부해요.', vi: 'Tôi học tiếng Hàn.' }
+        ],
+        dialogues: [
+            { kr: '지금 뭐 해요?', vi: 'Bây giờ bạn làm gì?', role: 'a' },
+            { kr: '학교에 가요.', vi: 'Tôi đi học.', role: 'b' },
+            { kr: '뭐 공부해요?', vi: 'Bạn học gì?', role: 'a' },
+            { kr: '한국어를 공부해요.', vi: 'Tôi học tiếng Hàn.', role: 'b' }
         ]
     },
     {

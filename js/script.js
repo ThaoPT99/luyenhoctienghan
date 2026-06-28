@@ -365,16 +365,80 @@ function openLesson(id) {
     document.getElementById('lessonList').style.display = 'none';
     document.getElementById('lessonDetail').style.display = 'block';
     
+    // Stage videos (YouTube)
+    const stageVideos = {
+        1: 'M6FjI2Vj9Ok', // Learn Hangul in 20 minutes
+        2: 'W3Qm0gH_P0Y', // Korean basic conversation
+        3: 'y3CY9y-cMXs', // TOPIK 1 preparation
+        4: 'f0D71I2rFo8'  // TOPIK 2 grammar
+    };
+    const videoId = stageVideos[lesson.stage] || '';
+    
+    // Generate dialogue HTML if available
+    const dialogues = lesson.dialogues || [];
+    const dialogueHTML = dialogues.length > 0 ? `
+        <h3 style="margin-top:24px;margin-bottom:12px;">🎭 Hội thoại mẫu</h3>
+        <div class="dialogue-box">
+            ${dialogues.map(d => `
+                <div class="dialogue-line ${d.role}">
+                    <span class="dialogue-role">${d.role === 'a' ? '👤 A' : '👤 B'}</span>
+                    <span class="dialogue-text-kr" onclick="speakKorean('${d.kr.replace(/'/g, "\\'")}')">${d.kr} 🔊</span>
+                    <span class="dialogue-text-vi">${d.vi}</span>
+                </div>
+            `).join('')}
+        </div>
+    ` : '';
+    
+    // Vocabulary cards with audio buttons
+    const vocabCards = lesson.vocab.map(v => `
+        <div class="vocab-card" onclick="speakKorean('${v.kr.replace(/'/g, "\\'")}')">
+            <div class="vocab-card-kr">${v.kr}</div>
+            <div class="vocab-card-pron">${v.pronunciation}</div>
+            <div class="vocab-card-mean">${v.meaning}</div>
+            <div class="vocab-card-audio">🔊</div>
+        </div>
+    `).join('');
+    
     document.getElementById('lessonContent').innerHTML = `
-        <div style="display:inline-block;padding:4px 12px;border-radius:20px;background:var(--bg);font-size:12px;margin-bottom:8px;">${lesson.level} • +50XP khi hoàn thành</div>
+        <div class="lesson-meta">
+            <span class="lesson-level-badge">${lesson.level}</span>
+            <span class="lesson-xp-badge">+50XP 🎮</span>
+        </div>
         <h2>Bài ${lesson.id}: ${lesson.title}</h2>
-        <p style="color:var(--text-secondary);margin-bottom:16px;">${lesson.description}</p>
-        <h3 style="margin-top:20px;margin-bottom:12px;">📝 Từ vựng (${lesson.vocab.length} từ)</h3>
-        <div class="lesson-vocab"><table>${lesson.vocab.map(v => `<tr><td>${v.kr}</td><td>${v.pronunciation}</td><td>${v.meaning}</td></tr>`).join('')}</table></div>
-        <h3 style="margin-top:20px;margin-bottom:12px;">📖 Ngữ pháp</h3>
-        ${lesson.grammar.map(g => `<div class="lesson-grammar"><h4>${g.title}</h4><p>${g.content}</p></div>`).join('')}
-        <h3 style="margin-top:20px;margin-bottom:12px;">💡 Ví dụ</h3>
-        <div class="lesson-examples">${lesson.examples.map(e => `<div class="example-item"><span class="kr">${e.kr}</span><span class="vn">${e.vi}</span></div>`).join('')}</div>
+        <p class="lesson-desc-text">${lesson.description}</p>
+        
+        ${videoId ? `
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/${videoId}" 
+                title="Video bài giảng" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>` : ''}
+        
+        <h3 style="margin-top:24px;margin-bottom:12px;">📝 Từ vựng (${lesson.vocab.length} từ) <span class="click-hint">🔊 Click vào từ để nghe</span></h3>
+        <div class="vocab-card-grid">${vocabCards}</div>
+        
+        <h3 style="margin-top:24px;margin-bottom:12px;">📖 Ngữ pháp</h3>
+        ${lesson.grammar.map(g => `
+            <div class="lesson-grammar">
+                <h4>${g.title}</h4>
+                <p>${g.content}</p>
+                ${g.example ? `<div class="grammar-example" onclick="speakKorean('${g.example.replace(/'/g, "\\'")}')">📝 ${g.example} 🔊</div>` : ''}
+            </div>
+        `).join('')}
+        
+        ${dialogueHTML}
+        
+        <h3 style="margin-top:24px;margin-bottom:12px;">💡 Ví dụ</h3>
+        <div class="lesson-examples">
+            ${lesson.examples.map(e => `
+                <div class="example-item" onclick="speakKorean('${e.kr.replace(/'/g, "\\'")}')">
+                    <span class="kr">${e.kr}</span>
+                    <span class="vn">${e.vi}</span>
+                    <span class="example-audio">🔊</span>
+                </div>
+            `).join('')}
+        </div>
     `;
 }
 function closeLesson() { document.getElementById('lessonList').style.display = 'grid'; document.getElementById('lessonDetail').style.display = 'none'; }
@@ -702,6 +766,86 @@ function checkExercise() {
     updateDashboard(); updateGameUI();
 }
 
+// ===== 🎧 LISTENING EXERCISE =====
+let _listenAnswer = '';
+function playListeningExercise() {
+    const words = allVocabulary.filter(w => w.kr.length <= 4 && !w.kr.includes('['));
+    if (words.length < 4) return;
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    const correct = shuffled[0];
+    _listenAnswer = correct.meaning;
+    
+    // Play the word
+    speakKorean(correct.kr, 0.7);
+    
+    // Generate options
+    const wrongs = words.filter(w => w.meaning !== correct.meaning)
+        .map(w => w.meaning)
+        .filter((v,i,a) => a.indexOf(v) === i)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+    const options = [correct.meaning, ...wrongs].sort(() => Math.random() - 0.5);
+    
+    document.getElementById('listeningOptions').innerHTML = options.map(opt => `
+        <div class="exercise-option" onclick="checkListeningAnswer('${opt.replace(/'/g, "\\'")}')">${opt}</div>
+    `).join('');
+    document.getElementById('listeningFeedback').style.display = 'none';
+    document.getElementById('listeningFeedback').className = 'exercise-feedback';
+}
+
+function checkListeningAnswer(answer) {
+    const fb = document.getElementById('listeningFeedback');
+    fb.style.display = 'block';
+    
+    if (answer === _listenAnswer) {
+        fb.textContent = '✅ Đúng! +5XP 🎮'; fb.className = 'exercise-feedback show correct';
+        state.exerciseScore.correct++; state.totalCorrect++;
+        addXP(5);
+        const newAch = checkAchievements();
+        if (newAch.length > 0) {
+            setTimeout(() => newAch.forEach(id => {
+                const a = ACHIEVEMENTS_LIST.find(x => x.id === id);
+                if (a) celebrate(a.icon + ' ' + a.name + '! ' + a.desc);
+            }), 500);
+        }
+        // Auto-next after delay
+        setTimeout(playListeningExercise, 1500);
+    } else {
+        fb.textContent = '❌ Sai. Dap an: ' + _listenAnswer; fb.className = 'exercise-feedback show incorrect';
+        // Play again
+        setTimeout(() => {
+            const word = allVocabulary.find(w => w.meaning === _listenAnswer);
+            if (word) speakKorean(word.kr, 0.7);
+        }, 1000);
+    }
+    state.exerciseScore.total++;
+    const pct = Math.round(state.exerciseScore.correct/state.exerciseScore.total*100);
+    document.getElementById('exerciseScore').textContent = state.exerciseScore.correct + '/' + state.exerciseScore.total;
+    document.getElementById('exercisePercent').textContent = pct + '%';
+    markStudiedToday(); saveState();
+    updateDashboard(); updateGameUI();
+}
+
+// ===== 🔤 TEXT-TO-SPEECH =====
+function speakKorean(text, speed = 0.8) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel(); // Stop any current speech
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ko-KR';
+    utterance.rate = speed;
+    // Try to find a Korean voice
+    const voices = window.speechSynthesis.getVoices();
+    const koreanVoice = voices.find(v => v.lang.startsWith('ko'));
+    if (koreanVoice) utterance.voice = koreanVoice;
+    speechSynthesis.speak(utterance);
+}
+
+// Load voices when they're ready
+if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices(); // Prime the API
+    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+}
+
 // ===== AI TUTOR =====
 function addAIMessage(role, content) {
     const d = document.createElement('div');
@@ -864,5 +1008,6 @@ window.loadExercise = loadExercise; window.selectExerciseOption = selectExercise
 window.filterVocab = filterVocab; window.renderLessonList = renderLessonList;
 window.answerQuiz = answerQuiz; window.showLessonQuiz = showLessonQuiz;
 window.sendToAI = sendToAI; window.saveApiKey = saveApiKey; window.resetApiKey = resetApiKey;
+window.speakKorean = speakKorean; window.playListeningExercise = playListeningExercise; window.checkListeningAnswer = checkListeningAnswer;
 
 console.log('🎮 Korean Quest loaded! Level', state.level, '•', state.xp, 'XP');

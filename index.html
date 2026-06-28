@@ -31,6 +31,9 @@
                 <div class="nav-item" data-tab="exercises">
                     <span class="nav-icon">✍️</span><span class="nav-label">Bài tập</span>
                 </div>
+                <div class="nav-item" data-tab="listening">
+                    <span class="nav-icon">🎧</span><span class="nav-label">Luyện nghe</span><span class="nav-badge">NEW</span>
+                </div>
                 <div class="nav-item" data-tab="ai-tutor">
                     <span class="nav-icon">🤖</span><span class="nav-label">AI Trợ giảng</span>
                 </div>
@@ -205,6 +208,18 @@
                     </div>
                 </div>
                 <div class="exercise-score">Điểm: <span id="exerciseScore">0/0</span> (<span id="exercisePercent">0%</span>)</div>
+            </section>
+
+            <!-- ===== LISTENING ===== -->
+            <section id="tab-listening" class="tab-content">
+                <div class="tab-header"><h2>🎧 Luyện nghe</h2><span class="ai-powered">🔊 Text-to-Speech</span></div>
+                <div class="listening-area" id="listeningArea">
+                    <div class="listening-play-btn" id="listenPlayBtn" onclick="playListeningExercise()">🔊</div>
+                    <p style="color:var(--text-secondary);margin-bottom:16px;">Nghe từ tiếng Hàn và chọn nghĩa đúng</p>
+                    <div class="listening-options" id="listeningOptions"></div>
+                    <div class="exercise-feedback" id="listeningFeedback"></div>
+                    <p style="font-size:13px;color:var(--text-light);margin-top:12px;">🎮 +5XP mỗi câu đúng</p>
+                </div>
             </section>
 
             <!-- ===== AI TUTOR ===== -->
