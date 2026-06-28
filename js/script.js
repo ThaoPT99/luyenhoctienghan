@@ -366,15 +366,6 @@ function openLesson(id) {
     document.getElementById('lessonList').style.display = 'none';
     document.getElementById('lessonDetail').style.display = 'block';
     
-    // Stage videos (YouTube)
-    const stageVideos = {
-        1: 'M6FjI2Vj9Ok', // Learn Hangul in 20 minutes
-        2: 'W3Qm0gH_P0Y', // Korean basic conversation
-        3: 'y3CY9y-cMXs', // TOPIK 1 preparation
-        4: 'f0D71I2rFo8'  // TOPIK 2 grammar
-    };
-    const videoId = stageVideos[lesson.stage] || '';
-    
     // Generate dialogue HTML if available
     const dialogues = lesson.dialogues || [];
     const dialogueHTML = dialogues.length > 0 ? `
@@ -407,14 +398,6 @@ function openLesson(id) {
         </div>
         <h2>Bài ${lesson.id}: ${lesson.title}</h2>
         <p class="lesson-desc-text">${lesson.description}</p>
-        
-        ${videoId ? `
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/${videoId}" 
-                title="Video bài giảng" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-        </div>` : ''}
         
         <h3 style="margin-top:24px;margin-bottom:12px;">📝 Từ vựng (${lesson.vocab.length} từ) <span class="click-hint">🔊 Click vào từ để nghe</span></h3>
         <div class="vocab-card-grid">${vocabCards}</div>

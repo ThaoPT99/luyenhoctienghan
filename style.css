@@ -371,23 +371,6 @@ html, body {
     font-weight: 400;
 }
 
-/* Video Wrapper */
-.video-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 560px;
-    margin: 16px 0;
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    aspect-ratio: 16 / 9;
-}
-.video-wrapper iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
 /* Vocab Cards Grid */
 .vocab-card-grid {
     display: grid;
