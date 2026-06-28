@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇰🇷 TOPIK 2 Lộ Trình</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo">🇰🇷</span>
+                <span class="logo-text">TOPIK 2</span>
+            </div>
+            <div class="sidebar-menu">
+                <div class="nav-item active" data-tab="dashboard">
+                    <span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span>
+                </div>
+                <div class="nav-item" data-tab="roadmap">
+                    <span class="nav-icon">🗺️</span><span class="nav-label">Lộ trình</span><span class="nav-badge">NEW</span>
+                </div>
+                <div class="nav-item" data-tab="lessons">
+                    <span class="nav-icon">📖</span><span class="nav-label">Bài học</span>
+                </div>
+                <div class="nav-item" data-tab="flashcard">
+                    <span class="nav-icon">🃏</span><span class="nav-label">Flashcard</span>
+                </div>
+                <div class="nav-item" data-tab="exercises">
+                    <span class="nav-icon">✍️</span><span class="nav-label">Bài tập</span>
+                </div>
+                <div class="nav-item" data-tab="ai-tutor">
+                    <span class="nav-icon">🤖</span><span class="nav-label">AI Trợ giảng</span>
+                </div>
+                <div class="nav-item" data-tab="vocabulary">
+                    <span class="nav-icon">📚</span><span class="nav-label">Từ vựng</span>
+                </div>
+                <div class="nav-item" data-tab="progress">
+                    <span class="nav-icon">📊</span><span class="nav-label">Tiến độ</span>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+                    <span style="background:rgba(255,255,255,0.15);padding:2px 10px;border-radius:10px;font-weight:700;font-size:12px;" id="sidebarLevel">Lv.1</span>
+                    <span style="font-size:12px;font-weight:600;" id="sidebarXP">0 XP</span>
+                </div>
+                <div class="streak-display" id="sidebarStreak">🔥 <span id="streakCount">0</span> ngày</div>
+                <div class="user-info"><span id="sidebarWords">0 từ</span> • <span id="sidebarTopik">TOPIK chưa thi</span></div>
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <!-- ===== DASHBOARD ===== -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="dashboard-header">
+                    <h1 class="greeting" id="greetingText">Chào bạn! 👋</h1>
+                    <p class="subtitle" id="dailyMotto">🇰🇷 Lộ trình 12 tháng → TOPIK 2</p>
+                </div>
+                <div class="topik-tracker">
+                    <div class="topik-badge" id="topikBadge">🎯 Mục tiêu: <strong>TOPIK 2</strong></div>
+                    <div class="topik-bar">
+                        <div class="topik-level" data-level="1">Cấp 1</div>
+                        <div class="topik-level" data-level="2">Cấp 2</div>
+                        <div class="topik-level active" data-level="3">Cấp 3</div>
+                        <div class="topik-level" data-level="4">Cấp 4</div>
+                        <div class="topik-level" data-level="5">Cấp 5</div>
+                        <div class="topik-level" data-level="6">Cấp 6</div>
+                    </div>
+                    <div class="topik-progress-bar">
+                        <div class="topik-progress-fill" id="topikProgressFill" style="width:0%"></div>
+                    </div>
+                    <p class="topik-estimate" id="topikEstimate">📊 Dự tính: Bắt đầu hành trình</p>
+                </div>
+                <div class="game-stats-widget">
+                    <span class="level-badge" id="playerLevel">1</span>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar-fill" id="levelProgress" style="width:0%"></div>
+                    </div>
+                    <span class="xp-text" id="playerXP">0 XP</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info"><span class="stat-value" id="statStreak">0</span><span class="stat-label">Ngày liên tiếp</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📖</div>
+                        <div class="stat-info"><span class="stat-value" id="statLessons">0</span><span class="stat-label">Bài / 45 bài</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🗺️</div>
+                        <div class="stat-info"><span class="stat-value" id="statStage">0/4</span><span class="stat-label">Giai đoạn</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info"><span class="stat-value" id="statAccuracy">0%</span><span class="stat-label">Bài tập đúng</span></div>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <h3>📋 Hôm nay học gì?</h3>
+                    <div id="todayPlan" class="today-plan">Mở tab Lộ trình để xem kế hoạch hôm nay</div>
+                    <div class="action-buttons">
+                        <button class="action-btn primary" onclick="navigateTo('roadmap')">🗺️ Xem lộ trình</button>
+                        <button class="action-btn secondary" onclick="navigateTo('lessons')">📖 Học bài</button>
+                        <button class="action-btn secondary" onclick="navigateTo('flashcard')">🃏 Ôn flashcard</button>
+                    </div>
+                </div>
+                <div class="daily-tip">
+                    <h4>💡 Mẹo nhỏ</h4>
+                    <p id="dailyTip">60 phút mỗi ngày, 12 tháng → TOPIK 2!</p>
+                </div>
+            </section>
+
+            <!-- ===== ROADMAP ===== -->
+            <section id="tab-roadmap" class="tab-content">
+                <div class="tab-header">
+                    <h2>🗺️ Lộ trình 12 tháng → TOPIK 2</h2>
+                    <span class="tab-actions">Mỗi ngày <strong>60 phút</strong></span>
+                </div>
+                <div class="roadmap-timeline" id="roadmapTimeline">
+                    <!-- Rendered by JS -->
+                </div>
+            </section>
+
+            <!-- ===== LESSONS ===== -->
+            <section id="tab-lessons" class="tab-content">
+                <div class="tab-header">
+                    <h2>📖 Bài học</h2>
+                    <div class="tab-actions">
+                        <span class="lesson-counter" id="lessonCounter">0/45 bài</span>
+                        <select id="stageFilter" onchange="renderLessonList()" style="margin-left:12px;padding:6px 12px;border:2px solid var(--border);border-radius:6px;font-size:13px;">
+                            <option value="all">Tất cả giai đoạn</option>
+                            <option value="1">🟢 GĐ 1: Hangul (Tuần 1)</option>
+                            <option value="2">🟢 GĐ 2: Sơ cấp 1 (Tháng 1-3)</option>
+                            <option value="3">🟡 GĐ 3: Sơ cấp 2 → TOPIK 1 (Tháng 4-6)</option>
+                            <option value="4">🟠 GĐ 4: Trung cấp → TOPIK 2 (Tháng 7-12)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="lesson-list" id="lessonList"></div>
+                <div class="lesson-detail" id="lessonDetail" style="display:none;">
+                    <button class="back-btn" onclick="closeLesson()">← Quay lại</button>
+                    <div id="lessonContent"></div>
+                    <div class="lesson-nav">
+                        <button class="action-btn outline" onclick="prevLesson()">← Bài trước</button>
+                        <button class="action-btn primary" onclick="completeLesson()">✅ Hoàn thành</button>
+                        <button class="action-btn outline" onclick="nextLesson()">Bài sau →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== FLASHCARD ===== -->
+            <section id="tab-flashcard" class="tab-content">
+                <div class="tab-header"><h2>🃏 Flashcard</h2><span id="flashcardCount">0 từ</span></div>
+                <div class="flashcard-controls">
+                    <select id="flashcardFilter" onchange="filterFlashcards()">
+                        <option value="all">Tất cả</option><option value="new">Chưa học</option>
+                        <option value="learning">Đang học</option><option value="mastered">Đã thuộc</option>
+                    </select>
+                    <select id="flashcardLesson" onchange="filterFlashcards()"><option value="all">Tất cả bài</option></select>
+                </div>
+                <div class="flashcard-container" id="flashcardContainer">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <span class="flashcard-word" id="flashcardFront">사과</span>
+                                <span class="flashcard-hint">Nhấn để xem</span>
+                            </div>
+                            <div class="flashcard-back">
+                                <span class="flashcard-word" id="flashcardBack">táo</span>
+                                <span class="flashcard-pronunciation" id="flashcardPronun">[sa-gwa]</span>
+                                <span class="flashcard-example" id="flashcardExample">저는 사과를 좋아해요</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-empty" id="flashcardEmpty" style="display:none;"><p>🎉 Không còn từ nào!</p></div>
+                </div>
+                <div class="flashcard-buttons" id="flashcardButtons">
+                    <button class="fc-btn forget" onclick="rateFlashcard(0)">😵 Chưa thuộc</button>
+                    <button class="fc-btn hard" onclick="rateFlashcard(1)">🤔 Hơi khó</button>
+                    <button class="fc-btn good" onclick="rateFlashcard(2)">🙂 Tạm ổn</button>
+                    <button class="fc-btn easy" onclick="rateFlashcard(3)">😎 Dễ quá!</button>
+                </div>
+            </section>
+
+            <!-- ===== EXERCISES ===== -->
+            <section id="tab-exercises" class="tab-content">
+                <div class="tab-header"><h2>✍️ Bài tập</h2></div>
+                <div class="exercise-controls">
+                    <select id="exerciseLesson" onchange="loadExercise()"><option value="all">Tất cả bài</option></select>
+                    <select id="exerciseType" onchange="loadExercise()">
+                        <option value="vocab">Từ vựng</option><option value="grammar">Ngữ pháp</option>
+                        <option value="translate">Dịch câu</option><option value="reading">Đọc hiểu</option>
+                    </select>
+                </div>
+                <div class="exercise-area" id="exerciseArea">
+                    <div class="exercise-question" id="exerciseQuestion"></div>
+                    <div class="exercise-options" id="exerciseOptions"></div>
+                    <div class="exercise-feedback" id="exerciseFeedback"></div>
+                    <div class="exercise-actions">
+                        <button class="action-btn secondary" onclick="checkExercise()">✅ Kiểm tra</button>
+                        <button class="action-btn outline" onclick="loadExercise()">🎲 Câu tiếp</button>
+                    </div>
+                </div>
+                <div class="exercise-score">Điểm: <span id="exerciseScore">0/0</span> (<span id="exercisePercent">0%</span>)</div>
+            </section>
+
+            <!-- ===== AI TUTOR ===== -->
+            <section id="tab-ai-tutor" class="tab-content">
+                <div class="tab-header"><h2>🤖 AI Trợ giảng</h2><span class="ai-powered">⚡ DeepSeek</span></div>
+                <div class="ai-setup" id="aiSetup">
+                    <div class="ai-setup-card">
+                        <h3>🔑 Kết nối DeepSeek AI</h3>
+                        <p>Nhập API Key để bắt đầu học với AI gia sư tiếng Hàn.</p>
+                        <div class="api-input-group">
+                            <input type="password" id="apiKeyInput" placeholder="sk-..." />
+                            <button class="action-btn primary" onclick="saveApiKey()">💾 Lưu</button>
+                        </div>
+                        <div class="ai-tips">
+                            <p>💡 <a href="https://platform.deepseek.com/" target="_blank">Đăng ký DeepSeek miễn phí →</a></p>
+                            <p class="small">Key được lưu trên máy tính này (localStorage).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-chat" id="aiChat" style="display:none;">
+                    <div class="ai-chat-header">
+                        <div class="ai-status"><span class="ai-dot"></span><span>Gia sư AI</span></div>
+                        <button class="text-btn" onclick="resetApiKey()">🔑 Đổi key</button>
+                    </div>
+                    <div class="ai-messages" id="aiMessages">
+                        <div class="message ai"><div class="msg-content"><p>👋 Xin chào! Hỏi tôi bất cứ điều gì về tiếng Hàn nhé!</p></div></div>
+                    </div>
+                    <div class="ai-input-area">
+                        <textarea id="aiInput" placeholder="Nhập câu hỏi..." rows="2"></textarea>
+                        <button class="send-btn" onclick="sendToAI()">📤</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== VOCABULARY ===== -->
+            <section id="tab-vocabulary" class="tab-content">
+                <div class="tab-header"><h2>📚 Từ vựng</h2><span id="vocabCount">0 từ</span></div>
+                <div class="vocab-controls">
+                    <input type="text" id="vocabSearch" placeholder="🔍 Tìm từ..." oninput="filterVocab()" />
+                    <select id="vocabFilter" onchange="filterVocab()">
+                        <option value="all">Tất cả</option><option value="new">Chưa học</option>
+                        <option value="learning">Đang học</option><option value="mastered">Đã thuộc</option>
+                    </select>
+                </div>
+                <div class="vocab-list" id="vocabList"></div>
+            </section>
+
+            <!-- ===== PROGRESS ===== -->
+            <section id="tab-progress" class="tab-content">
+                <div class="tab-header"><h2>📊 Tiến độ TOPIK 2</h2></div>
+                <div class="progress-grid">
+                    <div class="progress-card">
+                        <h4>📖 Bài học</h4>
+                        <div class="progress-bar-container"><div class="progress-bar" id="lessonProgressBar" style="width:0%"></div></div>
+                        <p id="lessonProgressText">0 / 45 bài</p>
+                    </div>
+                    <div class="progress-card">
+                        <h4>🗺️ Giai đoạn</h4>
+                        <div class="progress-bar-container"><div class="progress-bar" id="stageProgressBar" style="width:0%"></div></div>
+                        <p id="stageProgressText">0 / 4 giai đoạn</p>
+                    </div>
+                    <div class="progress-card">
+                        <h4>🔥 Streak</h4>
+                        <div class="streak-display large">🔥 <span id="progressStreakCount">0</span> ngày</div>
+                    </div>
+                    <div class="progress-card">
+                        <h4>🎯 TOPIK dự tính</h4>
+                        <div class="topik-estimate-card" id="topikEstimateCard">Chưa xác định</div>
+                    </div>
+                </div>
+                <div class="progress-calendar">
+                    <h4>📅 Lịch học 28 ngày</h4>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+                <div class="progress-motivation"><p id="motivationText">Hãy bắt đầu! 🚀</p></div>
+            </section>
+        </main>
+    </div>
+    <script src="js/lessons.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
