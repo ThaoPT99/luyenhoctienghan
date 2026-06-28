@@ -171,7 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('exerciseScore').textContent = `${state.exerciseScore.correct}/${state.exerciseScore.total}`;
     document.getElementById('exercisePercent').textContent = `${pct}%`;
     
-    if (state.deepseekApiKey) {
+    // Production (Vercel): AI key o server, an luon setup
+    const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    if (isProduction) {
+        document.getElementById('aiSetup').style.display = 'none';
+        document.getElementById('aiChat').style.display = 'flex';
+        document.querySelector('.ai-status span:last-child').textContent = 'Gia su AI (Vercel) ';
+    } else if (state.deepseekApiKey) {
         document.getElementById('aiSetup').style.display = 'none';
         document.getElementById('aiChat').style.display = 'flex';
     }
@@ -709,7 +715,10 @@ async function sendToAI() {
     const input = document.getElementById('aiInput');
     const msg = input.value.trim();
     if (!msg) return;
-    if (!state.deepseekApiKey) {
+    
+    const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    
+    if (!isProduction && !state.deepseekApiKey) {
         document.getElementById('aiSetup').style.display = 'flex';
         document.getElementById('aiChat').style.display = 'none';
         alert('⚠️ Cần DeepSeek API Key! Vào tab AI để nhập.'); return;
@@ -722,35 +731,59 @@ async function sendToAI() {
     typing.innerHTML = '<div class="msg-content"><p>🤔 Suy nghĩ...</p></div>';
     document.getElementById('aiMessages').appendChild(typing);
     
+    const requestBody = {
+        model: 'deepseek-chat',
+        messages: [
+            { role: 'system', content: 'Ban la gia su tieng Han sieu vui tinh, nang luong. Nguoi hoc la nguoi Viet, de chan, luoi hoc. Phai lam cho viec hoc thu vi! - Noi chuyen vui ve, co cam xuc, dung icon nhieu - Neu ho noi "luoi" thi dong vien, khen ho da co gang - Giai thich NGAN, co vi du NGAY - Luon luon viet: tieng Han + phien am + nghia - Khen thuong: "Tot lam! +10 tinh than!" - Dung tieng Viet. Phan hoi ngan gon, suc tich.' },
+            { role: 'user', content: msg }
+        ],
+        temperature: 0.9, max_tokens: 1200
+    };
+    
     try {
-        const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.deepseekApiKey}` },
-            body: JSON.stringify({
-                model: 'deepseek-chat',
-                messages: [
-                    { role: 'system', content: `Bạn là gia sư tiếng Hàn siêu vui tính, năng lượng. 
-                    Người học là người Việt, dễ chán, lười học. Phải làm cho việc học thú vị!
-                    - Nói chuyện vui vẻ, có cảm xúc, dùng icon nhiều
-                    - Nếu họ nói "lười" thì động viên, khen họ đã cố gắng
-                    - Giải thích NGẮN, có ví dụ NGAY
-                    - Luôn luôn viết: tiếng Hàn + phiên âm + nghĩa
-                    - Khen thưởng: "Tốt lắm! +10 tinh thần!" 😄
-                    - Dùng tiếng Việt. Phản hồi ngắn gọn, súc tích.` },
-                    { role: 'user', content: msg }
-                ],
-                temperature: 0.9, max_tokens: 1200
-            })
-        });
+        let res;
+        if (isProduction) {
+            // Tren Vercel: goi qua API proxy, key nam trong server
+            res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+        } else {
+            // Local dev: goi truc tiep DeepSeek voi key tu localStorage
+            res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + state.deepseekApiKey },
+                body: JSON.stringify(requestBody)
+            });
+        }
         document.getElementById('aiTyping')?.remove();
-        if (!res.ok) throw new Error((await res.json()).error?.message || 'Lỗi');
+        if (!res.ok) throw new Error((await res.json()).error?.message || 'Loi');
         const data = await res.json();
         addAIMessage('ai', data.choices[0].message.content);
-        addXP(2); saveState(); // XP cho tương tác AI
+        addXP(2); saveState();
     } catch(e) {
         document.getElementById('aiTyping')?.remove();
-        addAIMessage('ai', `❌ Lỗi: ${e.message}. Thử lại nhé!`);
+        addAIMessage('ai', '❌ Loi: ' + e.message + '. Thu lai nhe!');
     }
+}
+
+function saveApiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (!key) { alert('⚠️ Vui long nhap API Key!'); return; }
+    state.deepseekApiKey = key;
+    saveState();
+    document.getElementById('aiSetup').style.display = 'none';
+    document.getElementById('aiChat').style.display = 'flex';
+    alert('✅ Da luu API Key! Bat dau tro chuyen voi AI nhe!');
+}
+
+function resetApiKey() {
+    state.deepseekApiKey = '';
+    saveState();
+    document.getElementById('aiSetup').style.display = 'flex';
+    document.getElementById('aiChat').style.display = 'none';
+    document.getElementById('apiKeyInput').value = '';
 }
 
 // ===== VOCABULARY =====
@@ -830,5 +863,6 @@ window.filterFlashcards = filterFlashcards; window.rateFlashcard = rateFlashcard
 window.loadExercise = loadExercise; window.selectExerciseOption = selectExerciseOption; window.checkExercise = checkExercise;
 window.filterVocab = filterVocab; window.renderLessonList = renderLessonList;
 window.answerQuiz = answerQuiz; window.showLessonQuiz = showLessonQuiz;
+window.sendToAI = sendToAI; window.saveApiKey = saveApiKey; window.resetApiKey = resetApiKey;
 
 console.log('🎮 Korean Quest loaded! Level', state.level, '•', state.xp, 'XP');
