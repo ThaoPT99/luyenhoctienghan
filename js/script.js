@@ -1,6 +1,28 @@
 // ===== 🎮 KOREAN QUEST - HỌC NHƯ CHƠI GAME =====
 const STATE_KEY = 'koreanQuest';
 
+// ===== MERGE VOCAB BANK vào allVocabulary =====
+// vocabBankFlat được định nghĩa trong vocab-bank.js, load trước script.js
+(function() {
+    if (typeof vocabBankFlat !== 'undefined' && vocabBankFlat.length > 0) {
+        const existingKrs = new Set(allVocabulary.map(w => w.kr));
+        // Thêm từ vựng từ vocab bank mà chưa có trong allVocabulary
+        vocabBankFlat.forEach(w => {
+            if (!existingKrs.has(w.kr)) {
+                allVocabulary.push({
+                    kr: w.kr,
+                    meaning: w.meaning,
+                    pronunciation: w.pronunciation || '',
+                    lesson: w.topic === 'essential' ? 0 : 0,
+                    index: w.index
+                });
+                existingKrs.add(w.kr);
+            }
+        });
+    }
+    console.log(`📚 Total vocabulary: ${allVocabulary.length} từ (lessons + bank)`);
+})();
+
 let state = {
     completedLessons: [],
     vocabStatus: {},
@@ -196,6 +218,7 @@ function navigateTo(tab) {
     if (tab === 'reading') loadReading();
     if (tab === 'writing') loadWriting();
     if (tab === 'mocktest') {} // wait for user to click start
+    if (tab === 'grammar') loadGrammar();
 }
 
 // ===== DASHBOARD =====
@@ -1375,6 +1398,93 @@ function restartMockTestWrong() {
     renderMockTestQuestion();
 }
 
+// ===== 📖 GRAMMAR BANK =====
+let _grammarFiltered = [];
+let _grammarIndex = 0;
+
+function loadGrammar() {
+    const level = document.getElementById('grammarLevel').value;
+    const search = (document.getElementById('grammarSearch')?.value||'').toLowerCase();
+    
+    let items = [...grammarBank];
+    if (level !== 'all') items = items.filter(g => g.level.includes(level));
+    if (search) items = items.filter(g => g.title.toLowerCase().includes(search) || g.content.toLowerCase().includes(search));
+    
+    _grammarFiltered = items;
+    _grammarIndex = 0;
+    
+    document.getElementById('grammarCount').textContent = `${items.length} ngữ pháp`;
+    
+    if (items.length === 0) {
+        document.getElementById('grammarGrid').innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary);">Không tìm thấy ngữ pháp phù hợp</div>';
+        return;
+    }
+    
+    renderGrammarGrid();
+}
+
+function renderGrammarGrid() {
+    const grid = document.getElementById('grammarGrid');
+    const items = _grammarFiltered;
+    
+    grid.innerHTML = items.map(g => `
+        <div class="grammar-card" onclick="openGrammarDetail('${g.id}')">
+            <div class="grammar-card-header">
+                <span class="grammar-level">${g.level}</span>
+            </div>
+            <h3 class="grammar-card-title">${g.title}</h3>
+            <p class="grammar-card-desc">${g.content.substring(0, 100)}...</p>
+            <div class="grammar-card-example">📝 ${g.examples[0] || ''}</div>
+        </div>
+    `).join('');
+}
+
+function openGrammarDetail(id) {
+    const g = grammarBank.find(x => x.id === id);
+    if (!g) return;
+    
+    const examplesList = g.examples.map(ex => 
+        `<div class="grammar-example-item" onclick="speakKorean('${ex.replace(/'/g, "\\'")}')">📝 ${ex} 🔊</div>`
+    ).join('');
+    
+    document.getElementById('grammarGrid').innerHTML = `
+        <div class="grammar-detail">
+            <button class="back-btn" onclick="loadGrammar()">← Quay lại</button>
+            <div class="grammar-detail-header">
+                <span class="grammar-level">${g.level}</span>
+                <span class="grammar-xp">+3XP 🎮</span>
+            </div>
+            <h2 class="grammar-detail-title">${g.title}</h2>
+            <div class="grammar-detail-content">
+                ${g.content.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+            </div>
+            <h3 style="margin-top:20px;margin-bottom:12px;font-size:15px;">💡 Ví dụ</h3>
+            <div class="grammar-examples-list">${examplesList}</div>
+            <div style="margin-top:20px;display:flex;gap:10px;">
+                <button class="action-btn primary" onclick="markGrammarLearned('${g.id}')">✅ Đã học +3XP</button>
+                <button class="action-btn outline" onclick="loadGrammar()">📖 Danh sách</button>
+            </div>
+        </div>
+    `;
+}
+
+function markGrammarLearned(id) {
+    if (!state.grammarLearned) state.grammarLearned = [];
+    if (!state.grammarLearned.includes(id)) {
+        state.grammarLearned.push(id);
+        addXP(3);
+        markStudiedToday();
+        saveState();
+        updateDashboard(); updateGameUI();
+        celebrate('🎉 +3XP! Đã học ngữ pháp!');
+    }
+    loadGrammar();
+}
+
+function filterGrammar() {
+    loadGrammar();
+}
+
 // ===== EXPORT =====
 window.navigateTo = navigateTo; window.openLesson = openLesson; window.closeLesson = closeLesson;
 window.completeLesson = completeLesson; window.nextLesson = nextLesson; window.prevLesson = prevLesson;
@@ -1387,5 +1497,6 @@ window.speakKorean = speakKorean; window.playListeningExercise = playListeningEx
 window.loadReading = loadReading; window.selectReadingOption = selectReadingOption; window.checkReading = checkReading;
 window.loadWriting = loadWriting; window.checkWriting = checkWriting; window.showWritingAnswer = showWritingAnswer;
 window.startMockTest = startMockTest; window.answerMockTest = answerMockTest; window.nextMockTestQuestion = nextMockTestQuestion; window.goToMockTestQuestion = goToMockTestQuestion; window.restartMockTestWrong = restartMockTestWrong;
+window.loadGrammar = loadGrammar; window.filterGrammar = filterGrammar; window.openGrammarDetail = openGrammarDetail; window.markGrammarLearned = markGrammarLearned;
 
 console.log('🎮 Korean Quest loaded! Level', state.level, '•', state.xp, 'XP');

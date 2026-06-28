@@ -37,6 +37,9 @@
                 <div class="nav-item" data-tab="reading">
                     <span class="nav-icon">📄</span><span class="nav-label">Đọc hiểu</span>
                 </div>
+                <div class="nav-item" data-tab="grammar">
+                    <span class="nav-icon">📖</span><span class="nav-label">Ngữ pháp</span><span class="nav-badge">+80</span>
+                </div>
                 <div class="nav-item" data-tab="writing">
                     <span class="nav-icon">✏️</span><span class="nav-label">Luyện viết</span>
                 </div>
@@ -262,6 +265,25 @@
                 </div>
             </section>
 
+            <!-- ===== GRAMMAR ===== -->
+            <section id="tab-grammar" class="tab-content">
+                <div class="tab-header">
+                    <h2>📖 Ngữ pháp TOPIK 2</h2>
+                    <span class="tab-actions" id="grammarCount">80+ ngữ pháp</span>
+                </div>
+                <div class="grammar-controls">
+                    <input type="text" id="grammarSearch" placeholder="🔍 Tìm ngữ pháp..." oninput="filterGrammar()" />
+                    <select id="grammarLevel" onchange="filterGrammar()">
+                        <option value="all">Tất cả trình độ</option>
+                        <option value="중급 1">🟡 Trung cấp 1</option>
+                        <option value="중급 2">🟠 Trung cấp 2</option>
+                    </select>
+                </div>
+                <div class="grammar-grid" id="grammarGrid">
+                    <div style="text-align:center;padding:40px;color:var(--text-secondary);">Chọn trình độ để xem ngữ pháp TOPIK 2</div>
+                </div>
+            </section>
+
             <!-- ===== WRITING ===== -->
             <section id="tab-writing" class="tab-content">
                 <div class="tab-header">
@@ -411,6 +433,8 @@
         </main>
     </div>
     <script src="js/lessons.js"></script>
+    <script src="js/vocab-bank.js"></script>
+    <script src="js/grammar-bank.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
