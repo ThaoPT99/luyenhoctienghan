@@ -45,6 +45,28 @@ const STATE_KEY = 'koreanQuest';
     }
 })();
 
+// ===== MERGE VOCAB EXTRA 2 (+2500 từ) =====
+(function() {
+    if (typeof vocabExtra2 !== 'undefined' && vocabExtra2.length > 0) {
+        const existingKrs = new Set(allVocabulary.map(w => w.kr));
+        let added = 0;
+        vocabExtra2.forEach(w => {
+            if (!existingKrs.has(w.kr)) {
+                allVocabulary.push({
+                    kr: w.kr,
+                    meaning: w.meaning,
+                    pronunciation: w.pronunciation || '',
+                    lesson: 0,
+                    index: allVocabulary.length
+                });
+                existingKrs.add(w.kr);
+                added++;
+            }
+        });
+        console.log(`📚 Extra vocab 2 merged: +${added} từ (total: ${allVocabulary.length})`);
+    }
+})();
+
 // ===== MERGE GRAMMAR EXTRA (80+ ngữ pháp) =====
 (function() {
     if (typeof grammarExtra !== 'undefined' && grammarExtra.length > 0) {
@@ -58,6 +80,40 @@ const STATE_KEY = 'koreanQuest';
         console.log(`📖 Grammar extra merged: +${added} ngữ pháp (total: ${grammarBank.length})`);
     }
 })();
+
+// ===== MERGE GRAMMAR EXTRA 2 (+90 ngữ pháp) =====
+(function() {
+    if (typeof grammarExtra2 !== 'undefined' && grammarExtra2.length > 0) {
+        let added = 0;
+        grammarExtra2.forEach(g => {
+            if (!grammarBank.find(x => x.id === g.id)) {
+                grammarBank.push(g);
+                added++;
+            }
+        });
+        console.log(`📖 Grammar extra 2 merged: +${added} ngữ pháp (total: ${grammarBank.length} điểm)`);
+    }
+})();
+
+// ===== INTEGRATE READING EXTRA (+40 bài) =====
+(function() {
+    if (typeof readingExtra !== 'undefined' && readingExtra.length > 0) {
+        if (typeof topikReadingBank !== 'undefined') {
+            const existingIds = new Set(topikReadingBank.map(r => r.id));
+            let added = 0;
+            readingExtra.forEach(r => {
+                if (!existingIds.has(r.id)) {
+                    topikReadingBank.push(r);
+                    existingIds.add(r.id);
+                    added++;
+                }
+            });
+            console.log(`📄 Reading extra merged: +${added} bài (total reading bank: ${topikReadingBank.length})`);
+        }
+    }
+})();
+
+console.log(`📚 TỔNG KẾT: allVocabulary=${allVocabulary.length} từ, grammarBank=${grammarBank.length} điểm`);
 
 let state = {
     completedLessons: [],

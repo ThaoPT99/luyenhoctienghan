@@ -1,28 +1,80 @@
 // ===== 📝 TOPIK 2 MOCK TEST ENGINE — 10 ĐỀ THI THỬ =====
 // Mỗi đề: 30 câu đọc (TOPIK 2 format), chấm điểm, phân tích
 
-const topikMockTests = [];
+// ===== ĐỀ THI THỬ SẴN #1-#5 (Đọc) =====
+const topikMockTests = [
+  {
+    id:'MT01',title:'TOPIK 2 - Đề thi thử #1',timeLimit:50,totalQuestions:30,
+    difficulty:'Trung bình',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT02',title:'TOPIK 2 - Đề thi thử #2',timeLimit:50,totalQuestions:30,
+    difficulty:'Trung bình',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT03',title:'TOPIK 2 - Đề thi thử #3',timeLimit:50,totalQuestions:30,
+    difficulty:'Khó',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT04',title:'TOPIK 2 - Đề thi thử #4',timeLimit:50,totalQuestions:30,
+    difficulty:'Trung bình',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT05',title:'TOPIK 2 - Đề thi thử #5',timeLimit:50,totalQuestions:30,
+    difficulty:'Khó',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT06',title:'TOPIK 2 - Đề thi thử #6',timeLimit:50,totalQuestions:30,
+    difficulty:'Dễ',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT07',title:'TOPIK 2 - Đề thi thử #7',timeLimit:50,totalQuestions:30,
+    difficulty:'Trung bình',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT08',title:'TOPIK 2 - Đề thi thử #8',timeLimit:50,totalQuestions:30,
+    difficulty:'Khó',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT09',title:'TOPIK 2 - Đề thi thử #9',timeLimit:50,totalQuestions:30,
+    difficulty:'Trung bình',
+    sections:[{name:'Đọc hiểu',count:30}]
+  },
+  {
+    id:'MT10',title:'TOPIK 2 - Đề thi thử #10',timeLimit:70,totalQuestions:50,
+    difficulty:'Cao - Full TOPIK',
+    sections:[{name:'Đọc hiểu',count:30},{name:'Nghe hiểu',count:20}]
+  }
+];
 
 // Helper: sinh câu hỏi đọc từ reading bank
-function generateMockTest(testId) {
-    const allReadings = typeof getAllReadings === 'function' ? getAllReadings() : topikReadingBank;
-    if (allReadings.length < 5) return null;
+function generateMockTestQuestions(testId) {
+    const allReadings = typeof getAllReadings === 'function' ? getAllReadings() : 
+        (typeof topikReadingBank !== 'undefined' ? topikReadingBank : []);
+    const extraReadings = typeof readingExtra !== 'undefined' ? readingExtra : [];
+    const combined = [...allReadings, ...extraReadings];
+    if (combined.length < 5) return null;
     
-    // Chọn ngẫu nhiên 5-7 bài đọc
-    const shuffled = [...allReadings].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, 5 + Math.floor(Math.random() * 3));
+    const shuffled = [...combined].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 7 + Math.floor(Math.random() * 4));
     
-    // Sinh câu hỏi từ các bài đọc
     const questions = [];
     selected.forEach(reading => {
         if (reading.questions && reading.questions.length > 0) {
             const qs = [...reading.questions];
-            // Chọn 2-3 câu từ mỗi bài
             const count = Math.min(2 + Math.floor(Math.random() * 2), qs.length);
             for (let i = 0; i < count && qs.length > 0; i++) {
                 const qi = Math.floor(Math.random() * qs.length);
                 questions.push({
-                    passage: reading.passage.substring(0, 300),
+                    passage: reading.passage ? reading.passage.substring(0, 300) : '',
                     ...qs.splice(qi, 1)[0]
                 });
             }
@@ -32,7 +84,7 @@ function generateMockTest(testId) {
     return {
         id: testId,
         questions: questions.slice(0, 30),
-        timeLimit: 50, // phút
+        timeLimit: 50,
         passed: false,
         score: 0
     };
