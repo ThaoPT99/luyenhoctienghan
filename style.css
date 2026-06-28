@@ -2137,6 +2137,52 @@ html, body {
     background: #ffecb3;
 }
 
+/* ===== 12-MONTH ROADMAP ===== */
+.roadmap-year-plan {
+    margin-top: 24px;
+}
+.roadmap-month {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--border);
+    transition: var(--transition);
+}
+.roadmap-month:hover {
+    box-shadow: var(--shadow-hover);
+}
+.roadmap-month.active {
+    border-left-color: var(--primary);
+    background: linear-gradient(135deg, #f5f5ff, var(--card));
+}
+.roadmap-month.done {
+    border-left-color: var(--success);
+    opacity: 0.8;
+}
+.roadmap-month h4 {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--header-font);
+}
+.roadmap-month ul {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-left: 20px;
+    line-height: 1.8;
+}
+.roadmap-month ul li {
+    margin-bottom: 2px;
+}
+.roadmap-summary {
+    background: linear-gradient(135deg, #e8eaf6, #f3e5f5);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    margin-top: 16px;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     #sidebar {

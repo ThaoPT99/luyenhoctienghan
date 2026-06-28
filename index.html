@@ -224,13 +224,19 @@
 
             <!-- ===== LISTENING ===== -->
             <section id="tab-listening" class="tab-content">
-                <div class="tab-header"><h2>🎧 Luyện nghe</h2><span class="ai-powered">🔊 Text-to-Speech</span></div>
+                <div class="tab-header">
+                    <h2>🎧 Luyện nghe</h2>
+                    <span class="ai-powered" id="listenModeIndicator">🎧 TOPIK Nghe</span>
+                </div>
+                <div class="listen-mode-bar" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+                    <button class="action-btn primary" onclick="toggleListenMode('topik')" style="font-size:13px;padding:8px 16px;">🎧 TOPIK Nghe hiểu (50 câu)</button>
+                    <button class="action-btn outline" onclick="toggleListenMode('word')" style="font-size:13px;padding:8px 16px;">🔊 Đoán từ qua TTS</button>
+                </div>
                 <div class="listening-area" id="listeningArea">
-                    <div class="listening-play-btn" id="listenPlayBtn" onclick="playListeningExercise()">🔊</div>
-                    <p style="color:var(--text-secondary);margin-bottom:16px;">Nghe từ tiếng Hàn và chọn nghĩa đúng</p>
+                    <div class="listening-play-btn" id="listenPlayBtn" onclick="startTopikListening()">🔊</div>
                     <div class="listening-options" id="listeningOptions"></div>
                     <div class="exercise-feedback" id="listeningFeedback"></div>
-                    <p style="font-size:13px;color:var(--text-light);margin-top:12px;">🎮 +5XP mỗi câu đúng</p>
+                    <p style="font-size:13px;color:var(--text-light);margin-top:12px;">🎮 +5XP mỗi câu đúng • 50 câu hội thoại TOPIK chuẩn</p>
                 </div>
             </section>
 
@@ -434,7 +440,12 @@
     </div>
     <script src="js/lessons.js"></script>
     <script src="js/vocab-bank.js"></script>
+    <script src="js/vocab-bank-extra.js"></script>
     <script src="js/grammar-bank.js"></script>
+    <script src="js/grammar-bank-extra.js"></script>
+    <script src="js/topik-listening.js"></script>
+    <script src="js/topik-reading-bank.js"></script>
+    <script src="js/topik-mock.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

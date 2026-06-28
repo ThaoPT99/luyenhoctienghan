@@ -23,6 +23,42 @@ const STATE_KEY = 'koreanQuest';
     console.log(`📚 Total vocabulary: ${allVocabulary.length} từ (lessons + bank)`);
 })();
 
+// ===== MERGE VOCAB EXTRA (1800+ từ) =====
+(function() {
+    if (typeof vocabExtra !== 'undefined' && vocabExtra.length > 0) {
+        const existingKrs = new Set(allVocabulary.map(w => w.kr));
+        let added = 0;
+        vocabExtra.forEach(w => {
+            if (!existingKrs.has(w.kr)) {
+                allVocabulary.push({
+                    kr: w.kr,
+                    meaning: w.meaning,
+                    pronunciation: w.pronunciation || '',
+                    lesson: 0,
+                    index: allVocabulary.length
+                });
+                existingKrs.add(w.kr);
+                added++;
+            }
+        });
+        console.log(`📚 Extra vocab merged: +${added} từ (total: ${allVocabulary.length})`);
+    }
+})();
+
+// ===== MERGE GRAMMAR EXTRA (80+ ngữ pháp) =====
+(function() {
+    if (typeof grammarExtra !== 'undefined' && grammarExtra.length > 0) {
+        let added = 0;
+        grammarExtra.forEach(g => {
+            if (!grammarBank.find(x => x.id === g.id)) {
+                grammarBank.push(g);
+                added++;
+            }
+        });
+        console.log(`📖 Grammar extra merged: +${added} ngữ pháp (total: ${grammarBank.length})`);
+    }
+})();
+
 let state = {
     completedLessons: [],
     vocabStatus: {},
@@ -211,10 +247,10 @@ function navigateTo(tab) {
     document.getElementById(`tab-${tab}`).classList.add('active');
     document.querySelector(`.nav-item[data-tab="${tab}"]`)?.classList.add('active');
     if (tab === 'dashboard') updateDashboard();
-    if (tab === 'roadmap') renderRoadmap();
+    if (tab === 'roadmap') { renderRoadmap(); render12MonthRoadmap(); }
     if (tab === 'progress') updateProgress();
     if (tab === 'vocabulary') renderVocab();
-    if (tab === 'listening') setTimeout(playListeningExercise, 300);
+    if (tab === 'listening') setTimeout(startTopikListening, 300);
     if (tab === 'reading') loadReading();
     if (tab === 'writing') loadWriting();
     if (tab === 'mocktest') {} // wait for user to click start
@@ -315,7 +351,54 @@ function getCurrentStage() {
 }
 
 // ===== ROADMAP =====
-function renderRoadmap() {
+function render12MonthRoadmap() {
+    if (typeof topikRoadmap === 'undefined') return;
+    const container = document.getElementById('roadmapTimeline');
+    
+    // Check if 12-month content already exists
+    if (container.querySelector('.roadmap-year-plan')) return;
+    
+    let html = '<div class="roadmap-year-plan" style="margin-top:24px;">';
+    html += '<h3 style="margin-bottom:16px;">' + topikRoadmap.title + '</h3>';
+    html += '<p style="margin-bottom:20px;color:var(--text-secondary);">' + topikRoadmap.description + '</p>';
+    
+    // Tính toán tháng hiện tại dựa trên số bài đã hoàn thành
+    const completedPct = lessonsData.length > 0 ? state.completedLessons.length / lessonsData.length : 0;
+    const currentMonth = Math.min(12, Math.max(1, Math.ceil(completedPct * 12)));
+    
+    topikRoadmap.phases.forEach((phase, idx) => {
+        const monthNum = idx + 1;
+        const isCurrent = monthNum === currentMonth;
+        const isPast = monthNum < currentMonth;
+        
+        html += '<div class="roadmap-month ' + (isPast ? 'done' : isCurrent ? 'active' : '') + '" style="background:var(--card);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px;box-shadow:var(--shadow);border-left:4px solid ' + (isPast ? 'var(--success)' : isCurrent ? 'var(--primary)' : 'var(--border)') + ';">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+        html += '<h4 style="font-size:15px;font-weight:700;">' + (isPast ? '✅' : isCurrent ? '▶️' : '📅') + ' ' + phase.month + '. ' + phase.title + '</h4>';
+        html += '<span style="font-size:12px;color:var(--text-secondary);">' + phase.dailyTime + '/ngày</span>';
+        html += '</div>';
+        html += '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">🎯 Mục tiêu: ' + phase.goal + '</p>';
+        html += '<ul style="font-size:13px;color:var(--text-secondary);margin-left:20px;line-height:1.8;">';
+        phase.tasks.forEach(task => {
+            html += '<li>' + task + '</li>';
+        });
+        html += '</ul>';
+        if (phase.appLessons && phase.appLessons.length > 0) {
+            html += '<div style="margin-top:8px;font-size:12px;color:var(--primary-light);">📖 Bài học: ' + phase.appLessons.map(id => '<a href="#" onclick="navigateTo(\'lessons\');setTimeout(()=>openLesson(' + id + '),100)" style="color:var(--primary);text-decoration:none;font-weight:600;">Bài ' + id + '</a>').join(', ') + '</div>';
+        }
+        html += '</div>';
+    });
+    
+    html += '<div class="roadmap-summary" style="background:linear-gradient(135deg,#e8eaf6,#f3e5f5);border-radius:var(--radius);padding:20px;text-align:center;margin-top:16px;">';
+    html += '<h4>🏁 Mục tiêu</h4>';
+    html += '<p>' + topikRoadmap.getTotalWords() + ' • ' + topikRoadmap.getTotalGrammar() + ' • ' + topikRoadmap.getTotalReading() + '</p>';
+    html += '<p style="margin-top:8px;">🎯 ' + (completedPct >= 1 ? '🏆 Đã hoàn thành!' : Math.round((1 - completedPct) * 12) + ' tháng còn lại') + '</p>';
+    html += '</div>';
+    html += '</div>';
+    
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function renderRoadmap() { {
     const container = document.getElementById('roadmapTimeline');
     let html = `<div class="roadmap-header" style="text-align:center;padding:20px;background:var(--card);border-radius:var(--radius);margin-bottom:20px;box-shadow:var(--shadow);">
         <h2>🎮 Hành trình TOPIK 2</h2>
@@ -776,19 +859,135 @@ function checkExercise() {
     updateDashboard(); updateGameUI();
 }
 
-// ===== 🎧 LISTENING EXERCISE =====
+// ===== 🎧 LISTENING — HAI CHẾ ĐỘ =====
+let _listenMode = 'topik'; // 'word' or 'topik'
 let _listenAnswer = '';
+let _topikListenIndex = 0;
+let _topikListenCorrect = 0;
+let _topikListenTotal = 0;
+
+function toggleListenMode(mode) {
+    _listenMode = mode;
+    // Update indicator
+    document.getElementById('listenModeIndicator').textContent = mode === 'topik' ? '🎧 TOPIK Nghe' : '🔊 Đoán từ';
+    // Update button styles
+    document.querySelectorAll('.listen-mode-bar .action-btn').forEach(b => {
+        b.className = 'action-btn outline';
+    });
+    if (mode === 'topik') {
+        const btn = document.querySelector('.listen-mode-bar .action-btn:first-child');
+        if (btn) btn.className = 'action-btn primary';
+        startTopikListening();
+    } else {
+        const btn = document.querySelector('.listen-mode-bar .action-btn:last-child');
+        if (btn) btn.className = 'action-btn primary';
+        playListeningExercise();
+    }
+}
+
+function startTopikListening() {
+    if (typeof topikListening === 'undefined' || topikListening.length === 0) {
+        document.getElementById('listeningOptions').innerHTML = '<p style="color:var(--text-secondary);">Chưa có dữ liệu nghe TOPIK</p>';
+        return;
+    }
+    _topikListenIndex = 0;
+    _topikListenCorrect = 0;
+    _topikListenTotal = topikListening.length;
+    showTopikQuestion();
+}
+
+function showTopikQuestion() {
+    if (_topikListenIndex >= topikListening.length) {
+        // Finished all questions
+        document.getElementById('listeningOptions').innerHTML = `
+            <div style="text-align:center;padding:30px;">
+                <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+                <h3>Hoàn thành ${_topikListenTotal} câu!</h3>
+                <p style="color:var(--text-secondary);margin:8px 0;">Đúng: ${_topikListenCorrect}/${_topikListenTotal}</p>
+                <button class="action-btn primary" onclick="startTopikListening()">🔄 Làm lại</button>
+            </div>
+        `;
+        document.getElementById('listeningFeedback').style.display = 'none';
+        return;
+    }
+    
+    const q = topikListening[_topikListenIndex];
+    _listenAnswer = q.answer;
+    
+    // Play dialogue via TTS
+    speakKorean(q.script, 0.75);
+    
+    // Show progress
+    const progress = Math.round((_topikListenIndex + 1) / _topikListenTotal * 100);
+    
+    document.getElementById('listeningOptions').innerHTML = `
+        <div style="margin-bottom:16px;text-align:center;">
+            <div style="font-size:13px;color:var(--text-secondary);margin-bottom:4px;">${q.type === 'basic' ? '💬' : q.type === 'daily' ? '🗣️' : q.type === 'dialogue' ? '🎭' : q.type === 'announce' ? '📢' : '🎓'} Câu ${_topikListenIndex+1}/${_topikListenTotal} (${q.id})</div>
+            <div style="height:4px;background:var(--bg);border-radius:2px;max-width:300px;margin:0 auto;overflow:hidden;">
+                <div style="height:100%;width:${progress}%;background:var(--primary);border-radius:2px;transition:width 0.5s;"></div>
+            </div>
+        </div>
+        <div style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;padding:12px;background:#f5f5ff;border-radius:8px;line-height:1.8;font-family:var(--header-font);text-align:center;">
+            🔊 ${q.script}
+        </div>
+        <div style="font-size:16px;font-weight:600;margin-bottom:16px;text-align:center;">${q.question}</div>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:400px;margin:0 auto;">
+            ${q.options.map((opt, i) => `
+                <div class="exercise-option" onclick="checkTopikListenAnswer(${i})">${opt}</div>
+            `).join('')}
+        </div>
+    `;
+    document.getElementById('listeningFeedback').style.display = 'none';
+}
+
+function checkTopikListenAnswer(oi) {
+    const q = topikListening[_topikListenIndex];
+    if (!q) return;
+    
+    const fb = document.getElementById('listeningFeedback');
+    fb.style.display = 'block';
+    
+    if (oi === q.answer) {
+        _topikListenCorrect++;
+        state.exerciseScore.correct++;
+        state.totalCorrect++;
+        addXP(5);
+        fb.textContent = '✅ Đúng! +5XP 🎮';
+        fb.className = 'exercise-feedback show correct';
+        const newAch = checkAchievements();
+        if (newAch.length > 0) {
+            setTimeout(() => newAch.forEach(id => {
+                const a = ACHIEVEMENTS_LIST.find(x => x.id === id);
+                if (a) celebrate(a.icon + ' ' + a.name + '! ' + a.desc);
+            }), 500);
+        }
+        setTimeout(() => { _topikListenIndex++; showTopikQuestion(); }, 1200);
+    } else {
+        fb.textContent = '❌ Sai. Đáp án: ' + q.options[q.answer] + '. Phát lại...';
+        fb.className = 'exercise-feedback show incorrect';
+        setTimeout(() => { speakKorean(q.script, 0.75); }, 800);
+        setTimeout(() => { _topikListenIndex++; showTopikQuestion(); }, 2500);
+    }
+    
+    state.exerciseScore.total++;
+    const pct = Math.round(state.exerciseScore.correct/state.exerciseScore.total*100);
+    document.getElementById('exerciseScore').textContent = state.exerciseScore.correct + '/' + state.exerciseScore.total;
+    document.getElementById('exercisePercent').textContent = pct + '%';
+    markStudiedToday(); saveState();
+    updateDashboard(); updateGameUI();
+}
+
+// Original word-guessing mode (giữ nguyên)
+let _listenWordAnswer = '';
 function playListeningExercise() {
     const words = allVocabulary.filter(w => w.kr.length <= 4 && !w.kr.includes('['));
     if (words.length < 4) return;
     const shuffled = [...words].sort(() => Math.random() - 0.5);
     const correct = shuffled[0];
-    _listenAnswer = correct.meaning;
+    _listenWordAnswer = correct.meaning;
     
-    // Play the word
     speakKorean(correct.kr, 0.7);
     
-    // Generate options
     const wrongs = words.filter(w => w.meaning !== correct.meaning)
         .map(w => w.meaning)
         .filter((v,i,a) => a.indexOf(v) === i)
@@ -797,16 +996,18 @@ function playListeningExercise() {
     const options = [correct.meaning, ...wrongs].sort(() => Math.random() - 0.5);
     
     document.getElementById('listeningOptions').innerHTML = options.map(opt => `
-        <div class="exercise-option" onclick="checkListeningAnswer('${opt.replace(/'/g, "\\'")}')">${opt}</div>
+        <div class="exercise-option" onclick="checkListenWordAnswer('${opt.replace(/'/g, "\\'")}')">${opt}</div>
     `).join('');
     document.getElementById('listeningFeedback').style.display = 'none';
     document.getElementById('listeningFeedback').className = 'exercise-feedback';
 }
 
-function checkListeningAnswer(answer) {
+function checkListenWordAnswer(answer) {
     const fb = document.getElementById('listeningFeedback');
-    if (answer === _listenAnswer) {
-        fb.textContent = '✅ Đúng! +5XP 🎮'; fb.className = 'exercise-feedback show correct';
+    fb.style.display = 'block';
+    if (answer === _listenWordAnswer) {
+        fb.textContent = '✅ Đúng! +5XP 🎮';
+        fb.className = 'exercise-feedback show correct';
         state.exerciseScore.correct++; state.totalCorrect++;
         addXP(5);
         const newAch = checkAchievements();
@@ -816,13 +1017,12 @@ function checkListeningAnswer(answer) {
                 if (a) celebrate(a.icon + ' ' + a.name + '! ' + a.desc);
             }), 500);
         }
-        // Auto-next after delay
         setTimeout(playListeningExercise, 1500);
     } else {
-        fb.textContent = '❌ Sai. Dap an: ' + _listenAnswer; fb.className = 'exercise-feedback show incorrect';
-        // Play again
+        fb.textContent = '❌ Sai. Đáp án: ' + _listenWordAnswer;
+        fb.className = 'exercise-feedback show incorrect';
         setTimeout(() => {
-            const word = allVocabulary.find(w => w.meaning === _listenAnswer);
+            const word = allVocabulary.find(w => w.meaning === _listenWordAnswer);
             if (word) speakKorean(word.kr, 0.7);
         }, 1000);
     }
@@ -1012,35 +1212,72 @@ function markStudiedToday() {
 let _readingData = null;
 let _readingScore = { correct: 0, total: 0 };
 
+function getCombinedReadings() {
+    // Kết hợp bài đọc từ lessons + topikReadingBank
+    const all = [];
+    // Từ lessons
+    if (typeof lessonsData !== 'undefined') {
+        lessonsData.forEach(lesson => {
+            if (lesson.reading) {
+                all.push({
+                    id: 'L' + lesson.id,
+                    title: lesson.title,
+                    level: lesson.stage === 4 ? 4 : 3,
+                    source: 'app',
+                    passage: lesson.reading,
+                    questions: lesson.readingQuestions || []
+                });
+            }
+        });
+    }
+    // Từ reading bank
+    if (typeof topikReadingBank !== 'undefined') {
+        topikReadingBank.forEach(r => {
+            all.push({
+                id: r.id,
+                title: r.title,
+                level: r.level,
+                source: 'bank',
+                passage: r.passage,
+                questions: r.questions || []
+            });
+        });
+    }
+    return all;
+}
+
 function loadReading() {
+    const allReadings = getCombinedReadings();
     const level = document.getElementById('readingLevel').value;
-    let lessons = level !== 'all' 
-        ? lessonsData.filter(l => l.stage === parseInt(level) && l.reading)
-        : lessonsData.filter(l => l.reading);
     
-    if (lessons.length === 0) {
-        document.getElementById('readingPassage').innerHTML = 'Chua co bai doc cho trinh do nay. Hay hoc bai truoc!';
+    let filtered = level !== 'all' 
+        ? allReadings.filter(r => r.level === parseInt(level))
+        : allReadings;
+    
+    if (filtered.length === 0) {
+        document.getElementById('readingPassage').innerHTML = 'Chưa có bài đọc cho trình độ này. Hãy học bài trước!';
         document.getElementById('readingQuestions').innerHTML = '';
         document.getElementById('readingFeedback').style.display = 'none';
+        document.getElementById('readingTitle').textContent = 'Không có bài đọc';
+        document.getElementById('readingSource').textContent = '';
         return;
     }
     
-    const lesson = lessons[Math.floor(Math.random() * lessons.length)];
-    _readingData = lesson;
-    _readingScore = { correct: 0, total: lesson.readingQuestions ? lesson.readingQuestions.length : 0 };
+    const item = filtered[Math.floor(Math.random() * filtered.length)];
+    _readingData = item;
+    _readingScore = { correct: 0, total: item.questions.length };
     
-    document.getElementById('readingTitle').textContent = 'Bai ' + lesson.id + ': ' + lesson.title;
-    document.getElementById('readingSource').textContent = lesson.level;
-    document.getElementById('readingPassage').innerHTML = '<p style="line-height:1.8;font-size:15px;">' + lesson.reading + '</p>';
+    document.getElementById('readingTitle').textContent = item.id + ': ' + item.title;
+    document.getElementById('readingSource').textContent = (item.level === 4 ? '🟠 Trung cấp' : '🟡 Sơ cấp 2') + ' • ' + (item.source === 'bank' ? '📚 Kho đọc' : '📖 Bài học');
+    document.getElementById('readingPassage').innerHTML = '<p style="line-height:1.8;font-size:15px;">' + item.passage + '</p>';
     document.getElementById('readingFeedback').style.display = 'none';
     document.getElementById('readingFeedback').className = 'exercise-feedback';
-    document.getElementById('readingScore').textContent = 'Diem: 0/' + _readingScore.total;
+    document.getElementById('readingScore').textContent = 'Điểm: 0/' + _readingScore.total;
     
-    // Reset all selected states
     window._readingAnswers = {};
     
-    if (lesson.readingQuestions) {
-        document.getElementById('readingQuestions').innerHTML = lesson.readingQuestions.map((q, qi) => `
+    if (item.questions.length > 0) {
+        document.getElementById('readingQuestions').innerHTML = item.questions.map((q, qi) => `
             <div class="reading-q-block">
                 <p class="reading-q-text">${qi+1}. ${q.q}</p>
                 <div class="reading-q-options">
@@ -1051,7 +1288,7 @@ function loadReading() {
             </div>
         `).join('');
     } else {
-        document.getElementById('readingQuestions').innerHTML = '';
+        document.getElementById('readingQuestions').innerHTML = '<p style="color:var(--text-secondary);">Chưa có câu hỏi cho bài đọc này.</p>';
     }
 }
 
@@ -1063,23 +1300,21 @@ function selectReadingOption(el) {
 }
 
 function checkReading() {
-    if (!_readingData || !_readingData.readingQuestions) return;
+    if (!_readingData || !_readingData.questions || _readingData.questions.length === 0) return;
     const fb = document.getElementById('readingFeedback');
     
-    // Check if all answered
-    const total = _readingData.readingQuestions.length;
+    const total = _readingData.questions.length;
     const answered = Object.keys(window._readingAnswers).length;
     if (answered < total) {
-        fb.textContent = '⚠️ Vui long tra loi het ' + total + ' cau truoc!';
+        fb.textContent = '⚠️ Vui lòng trả lời hết ' + total + ' câu trước!';
         fb.className = 'exercise-feedback show incorrect';
         return;
     }
     
     let correct = 0;
-    _readingData.readingQuestions.forEach((q, i) => {
+    _readingData.questions.forEach((q, i) => {
         if (window._readingAnswers[i] === q.answer) correct++;
-        // Mark correct/incorrect visually
-        document.querySelectorAll(`.reading-option[data-qi="${i}"]`).forEach(o => {
+        document.querySelectorAll('.reading-option[data-qi="' + i + '"]').forEach(o => {
             const oi = parseInt(o.dataset.oi);
             if (oi === q.answer) o.classList.add('correct');
             else if (o.classList.contains('selected') && oi !== q.answer) o.classList.add('incorrect');
@@ -1093,7 +1328,7 @@ function checkReading() {
     
     const pct = Math.round(correct/total*100);
     if (correct >= total - 1) {
-        fb.textContent = '🎉 Dung ' + correct + '/' + total + '! +' + (correct * 5) + 'XP!'; 
+        fb.textContent = '🎉 Đúng ' + correct + '/' + total + '! +' + (correct * 5) + 'XP!';
         fb.className = 'exercise-feedback show correct';
         addXP(correct * 5);
         markStudiedToday();
@@ -1107,11 +1342,11 @@ function checkReading() {
         saveState();
         updateDashboard(); updateGameUI();
     } else {
-        fb.textContent = '😅 Dung ' + correct + '/' + total + '. Hay doc lai bai va thu lai!'; 
+        fb.textContent = '😅 Đúng ' + correct + '/' + total + '. Hãy đọc lại bài và thử lại!';
         fb.className = 'exercise-feedback show incorrect';
     }
     
-    document.getElementById('readingScore').textContent = 'Diem: ' + _readingScore.correct + '/' + _readingScore.total;
+    document.getElementById('readingScore').textContent = 'Điểm: ' + _readingScore.correct + '/' + _readingScore.total;
 }
 
 // ===== ✏️ WRITING PRACTICE =====
@@ -1493,7 +1728,7 @@ window.loadExercise = loadExercise; window.selectExerciseOption = selectExercise
 window.filterVocab = filterVocab; window.renderLessonList = renderLessonList;
 window.answerQuiz = answerQuiz; window.showLessonQuiz = showLessonQuiz;
 window.sendToAI = sendToAI; window.saveApiKey = saveApiKey; window.resetApiKey = resetApiKey;
-window.speakKorean = speakKorean; window.playListeningExercise = playListeningExercise; window.checkListeningAnswer = checkListeningAnswer;
+window.speakKorean = speakKorean; window.playListeningExercise = playListeningExercise; window.toggleListenMode = toggleListenMode; window.startTopikListening = startTopikListening; window.checkTopikListenAnswer = checkTopikListenAnswer; window.checkListenWordAnswer = checkListenWordAnswer;
 window.loadReading = loadReading; window.selectReadingOption = selectReadingOption; window.checkReading = checkReading;
 window.loadWriting = loadWriting; window.checkWriting = checkWriting; window.showWritingAnswer = showWritingAnswer;
 window.startMockTest = startMockTest; window.answerMockTest = answerMockTest; window.nextMockTestQuestion = nextMockTestQuestion; window.goToMockTestQuestion = goToMockTestQuestion; window.restartMockTestWrong = restartMockTestWrong;
