@@ -568,6 +568,13 @@ const lessonsData = [
             { kr: '도서관에 공부하러 가요.', vi: 'Đi thư viện để học.' },
             { kr: '한국에 가 보고 싶어요.', vi: 'Muốn thử đến Hàn.' },
             { kr: '시장에 과일을 사러 가요.', vi: 'Đi chợ để mua trái cây.' }
+        ],
+        reading: '주말에 친구와 함께 명동에 놀러 갔어요. 거기에서 여러 가지 재미있는 경험을 했어요. 먼저 한국 전통 옷인 한복을 입어 봤어요. 정말 예뻤어요! 그리고 길거리 음식을 먹어 봤어요. 떡볶이를 먹어 봤는데 매웠지만 맛있었어요. 그다음에 카페에 가서 한국 전통 차를 마셔 봤어요. 수정과를 마셔 봤는데 달콤하고 맛있었어요. 친구가 "한국 노래방에 가 볼래?"라고 물어봤어요. "좋아!" 우리는 노래방에 가서 한국 노래를 불러 봤어요. 처음이라 어려웠지만 재미있었어요! 명동에 놀러 가길 정말 잘했어요!',
+        readingQuestions: [
+            { q: 'Cuối tuần người nói đã đi đâu?', options: ['Hongdae', 'Myeongdong', 'Gangnam', 'Insadong'], answer: 1 },
+            { q: 'Người nói đã thử mặc gì?', options: ['Áo dài', 'Hanbok', 'Kimono', 'Vest'], answer: 1 },
+            { q: 'Người nói đã thử món gì?', options: ['Bánh gạo cay', 'Bibimbap', 'Samgyeopsal', 'Jajangmyeon'], answer: 0 },
+            { q: 'Cuối cùng họ đi đâu?', options: ['Nhà hàng', 'Quán bar', 'Phòng hát', 'Rạp phim'], answer: 2 }
         ]
     },
     {
