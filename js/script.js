@@ -955,7 +955,7 @@ function checkQuizResult() {
     const quiz = window._lessonQuiz;
     if (!quiz) return;
     
-    const correct = quiz.questions.filter(q => q.userAnswer === q.correctAnswer).length;
+    const correct = quiz.questions.filter(q => q.userAnswer && q.userAnswer.normalize() === (q.correctAnswer || '').normalize()).length;
     const total = quiz.questions.length;
     const passed = correct >= total - 1; // Cần 2/3 hoặc 3/3
     
@@ -1153,7 +1153,7 @@ function checkExercise() {
     if (!selectedExerciseOption) { fb.textContent = '⚠️ Chọn đáp án!'; fb.className = 'exercise-feedback show incorrect'; return; }
     
     state.exerciseScore.total++;
-    const correct = selectedExerciseOption === window._currentExercise.correctAnswer;
+    const correct = selectedExerciseOption && selectedExerciseOption.normalize() === (window._currentExercise && window._currentExercise.correctAnswer || '').normalize();
     if (correct) {
         state.exerciseScore.correct++; state.totalCorrect++;
         state.dailyProgress.correct = (state.dailyProgress.correct || 0) + 1;
@@ -1167,7 +1167,7 @@ function checkExercise() {
     }
     
     document.querySelectorAll('.exercise-option').forEach(o => {
-        if (o.dataset.value === window._currentExercise.correctAnswer) o.classList.add('correct');
+        if ((o.dataset.value || '''').normalize() === (window._currentExercise && window._currentExercise.correctAnswer || '''').normalize()) o.classList.add('correct');
         else if (o.classList.contains('selected') && !correct) o.classList.add('incorrect');
     });
     
@@ -1337,7 +1337,7 @@ function playListeningExercise() {
 function checkListenWordAnswer(answer) {
     const fb = document.getElementById('listeningFeedback');
     fb.style.display = 'block';
-    if (answer === _listenWordAnswer) {
+    if (answer && answer.normalize() === (_listenWordAnswer || '').normalize()) {
         fb.textContent = '✅ Đúng! +5XP 🎮';
         fb.className = 'exercise-feedback show correct';
         state.exerciseScore.correct++; state.totalCorrect++;
@@ -1982,7 +1982,7 @@ function renderMockTestQuestion() {
     // Create progress dots
     let dots = '';
     for (let i = 0; i < _mockTest.length; i++) {
-        const status = _mockTestAnswers[i] !== undefined ? (_mockTestAnswers[i] === _mockTest[i].correct ? 'correct' : 'wrong') : '';
+        const status = _mockTestAnswers[i] !== undefined ? (_mockTestAnswers[i].normalize() === (_mockTest[i].correct || '').normalize() ? 'correct' : 'wrong') : '';
         dots += '<span class="test-dot ' + status + '" onclick="goToMockTestQuestion(' + i + ')">' + (i+1) + '</span>';
     }
     
@@ -2019,7 +2019,7 @@ function answerMockTest(oi) {
     const options = document.querySelectorAll('.mocktest-option');
     options.forEach((el, i) => {
         el.onclick = null;
-        if (q.options[i] === q.correct) el.classList.add('correct');
+        if (q.options[i] && q.options[i].normalize() === (q.correct || '').normalize()) el.classList.add('correct');
         else if (i === oi && q.options[i] !== q.correct) el.classList.add('incorrect');
     });
     
@@ -2047,7 +2047,7 @@ function goToMockTestQuestion(idx) {
 function finishMockTest() {
     let correct = 0;
     _mockTest.forEach((q, i) => {
-        if (_mockTestAnswers[i] === q.correct) correct++;
+        if (_mockTestAnswers[i] ? _mockTestAnswers[i].normalize() === (q.correct || '').normalize() : false) correct++;
     });
     
     const total = _mockTest.length;
@@ -2103,7 +2103,7 @@ function finishMockTest() {
 
 function restartMockTestWrong() {
     // Filter to only wrong answers
-    const wrong = _mockTest.filter((q, i) => _mockTestAnswers[i] !== q.correct);
+    const wrong = _mockTest.filter((q, i) => !_mockTestAnswers[i] || _mockTestAnswers[i].normalize() !== (q.correct || '').normalize());
     if (wrong.length === 0) {
         celebrate('🎉 Khong co cau sai! Ban gioi qua!');
         return;
