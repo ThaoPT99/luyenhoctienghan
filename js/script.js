@@ -131,7 +131,20 @@ let state = {
     dailyQuests: [],
     questDate: null,
     quickSessions: 0,
-    totalCorrect: 0
+    totalCorrect: 0,
+    questsClaimed: [],
+    notificationsEnabled: false,
+    notificationLastShown: null,
+    dailyProgress: {
+        lessons: 0,
+        flashcards: 0,
+        exercises: 0,
+        correct: 0,
+        grammar: 0,
+        listening: 0,
+        reading: 0
+    },
+    dailyProgressDate: null
 };
 
 // ===== GAME ENGINE =====
@@ -189,28 +202,216 @@ function checkAchievements() {
     return newAchievements;
 }
 
-function getRandomQuest() {
-    const quests = [
-        { task: '📖 Học 1 bài mới', xp: 50, icon: '📖', check: () => true },
-        { task: '🃏 Ôn 5 flashcard', xp: 30, icon: '🃏', check: () => Object.keys(state.vocabStatus).length > 0 },
-        { task: '✍️ Làm 3 câu bài tập', xp: 40, icon: '✍️', check: () => state.exerciseScore.total >= 3 },
-        { task: '🔥 Giữ streak hôm nay', xp: 60, icon: '🔥', check: () => true },
-        { task: '🎯 Đúng 5 câu bài tập', xp: 50, icon: '🎯', check: () => state.totalCorrect >= 5 }
-    ];
-    return quests[Math.floor(Math.random() * quests.length)];
-}
+const QUESTS_POOL = [
+    { id: 'lessons', task: '📖 Học 1 bài mới', xp: 50, icon: '📖', target: 1, key: 'lessons', desc: 'Hoàn thành 1 bài học → +50XP' },
+    { id: 'flashcards', task: '🃏 Ôn 10 flashcard', xp: 30, icon: '🃏', target: 10, key: 'flashcards', desc: 'Ôn 10 thẻ → +30XP' },
+    { id: 'exercises', task: '✍️ Làm 5 câu bài tập', xp: 40, icon: '✍️', target: 5, key: 'exercises', desc: 'Làm 5 câu → +40XP' },
+    { id: 'correct', task: '🎯 Đúng 5 câu đúng', xp: 50, icon: '🎯', target: 5, key: 'correct', desc: 'Đúng 5 câu → +50XP' },
+    { id: 'grammar', task: '📖 Học 2 ngữ pháp', xp: 35, icon: '📖', target: 2, key: 'grammar', desc: 'Học 2 điểm ngữ pháp → +35XP' },
+    { id: 'listening', task: '🎧 Nghe 5 câu TOPIK', xp: 40, icon: '🎧', target: 5, key: 'listening', desc: 'Nghe 5 câu → +40XP' },
+    { id: 'reading', task: '📄 Đọc 2 bài đọc hiểu', xp: 45, icon: '📄', target: 2, key: 'reading', desc: 'Đọc 2 bài → +45XP' },
+    { id: 'flashcards_easy', task: '🃏 Ôn 20 flashcard', xp: 60, icon: '🃏', target: 20, key: 'flashcards', desc: 'Ôn 20 thẻ nhanh → +60XP' },
+    { id: 'exercises_hard', task: '✍️ Làm 10 câu bài tập', xp: 70, icon: '✍️', target: 10, key: 'exercises', desc: 'Làm 10 câu → +70XP' },
+    { id: 'streak_keep', task: '🔥 Giữ streak hôm nay', xp: 60, icon: '🔥', target: 1, key: 'streak', desc: 'Học hôm nay → +60XP' }
+];
 
 function generateDailyQuests() {
     const today = new Date().toDateString();
+    checkResetDailyProgress();
     if (state.questDate === today && state.dailyQuests.length > 0) return;
     
     state.questDate = today;
+    state.questsClaimed = [];
     state.dailyQuests = [];
-    const numQuests = 2 + (state.streak.count >= 3 ? 1 : 0); // Thêm quest nếu có streak
+    
+    // Chọn 3 quest ngẫu nhiên, ưu tiên quest chưa claim
+    const shuffled = [...QUESTS_POOL].sort(() => Math.random() - 0.5);
+    const numQuests = 2 + (state.streak.count >= 3 ? 1 : 0);
+    
+    // Luôn có quest streak nếu đang có streak
+    const streakQuest = QUESTS_POOL.find(q => q.id === 'streak_keep');
+    if (state.streak.count > 0 && streakQuest && !state.dailyQuests.find(q => q.id === 'streak_keep')) {
+        state.dailyQuests.push({ ...streakQuest, progress: 1, claimed: false });
+    }
+    
     for (let i = 0; i < numQuests; i++) {
-        state.dailyQuests.push(getRandomQuest());
+        if (state.dailyQuests.length >= numQuests) break;
+        const q = shuffled[i];
+        if (!state.dailyQuests.find(x => x.id === q.id)) {
+            state.dailyQuests.push({
+                ...q,
+                progress: state.dailyProgress[q.key] || 0,
+                claimed: state.questsClaimed.includes(q.id)
+            });
+        }
     }
     saveState();
+}
+
+function updateQuestProgress() {
+    state.dailyQuests.forEach(q => {
+        if (q.key === 'streak') {
+            q.progress = state.streak.count > 0 ? 1 : 0;
+        } else {
+            q.progress = Math.min(q.target, state.dailyProgress[q.key] || 0);
+        }
+    });
+    saveState();
+}
+
+function renderDailyQuests() {
+    const container = document.getElementById('questList');
+    if (!container) return;
+    
+    generateDailyQuests();
+    updateQuestProgress();
+    
+    if (!state.dailyQuests || state.dailyQuests.length === 0) {
+        container.innerHTML = '<div class="quest-empty">🎉 Hôm nay không có nhiệm vụ!</div>';
+        return;
+    }
+    
+    let html = '';
+    state.dailyQuests.forEach((q, i) => {
+        const done = q.progress >= q.target;
+        const claimed = state.questsClaimed.includes(q.id);
+        const pct = Math.min(100, Math.round((q.progress / q.target) * 100));
+        
+        html += `
+        <div class="quest-card ${done ? 'complete' : ''} ${claimed ? 'claimed' : ''}">
+            <div class="quest-icon">${q.icon}</div>
+            <div class="quest-info">
+                <div class="quest-task">${q.task}</div>
+                <div class="quest-desc">${q.desc}</div>
+                <div class="quest-bar-track">
+                    <div class="quest-bar-fill" style="width:${pct}%"></div>
+                </div>
+                <div class="quest-progress-text">${Math.min(q.progress, q.target)}/${q.target}</div>
+            </div>
+            <div class="quest-action">
+                ${claimed 
+                    ? '<span class="quest-claimed-badge">✅ Đã nhận</span>' 
+                    : done 
+                        ? `<button class="quest-claim-btn" onclick="claimQuest('${q.id}')">🎁 Nhận ${q.xp}XP</button>`
+                        : `<span class="quest-pending">🔒 ${pct}%</span>`
+                }
+            </div>
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+}
+
+function claimQuest(questId) {
+    if (state.questsClaimed.includes(questId)) return;
+    
+    const quest = state.dailyQuests.find(q => q.id === questId);
+    if (!quest || quest.progress < quest.target) {
+        celebrate('⚠️ Chưa hoàn thành nhiệm vụ!');
+        return;
+    }
+    
+    state.questsClaimed.push(questId);
+    const leveledUp = addXP(quest.xp);
+    markStudiedToday();
+    saveState();
+    
+    fireConfetti();
+    playSound('success');
+    celebrate(`🎉 Nhận ${quest.xp}XP từ "${quest.task}"! ${leveledUp ? '🌟 LEVEL UP! Lv.'+state.level : ''}`);
+    
+    updateDashboard();
+    updateGameUI();
+}
+
+function checkResetDailyProgress() {
+    const today = new Date().toDateString();
+    if (state.dailyProgressDate !== today) {
+        state.dailyProgressDate = today;
+        state.dailyProgress = { lessons: 0, flashcards: 0, exercises: 0, correct: 0, grammar: 0, listening: 0, reading: 0 };
+        state.questDate = null;
+        state.dailyQuests = [];
+        state.questsClaimed = [];
+        saveState();
+    }
+}
+
+function renderAchievements() {
+    const container = document.getElementById('achievementList');
+    if (!container) return;
+    
+    const unlocked = state.achievements;
+    const total = ACHIEVEMENTS_LIST.length;
+    
+    // Show last 6 achievements or placeholders
+    let html = '';
+    const displayAch = ACHIEVEMENTS_LIST.slice(0, 8);
+    displayAch.forEach(a => {
+        const has = unlocked.includes(a.id);
+        html += `<div class="ach-item ${has ? 'unlocked' : 'locked'}" title="${a.desc}">
+            <span class="ach-icon">${has ? a.icon : '🔒'}</span>
+            <span class="ach-name">${has ? a.name : '???'}</span>
+        </div>`;
+    });
+    
+    html += `<div class="ach-count">${unlocked.length}/${total}</div>`;
+    container.innerHTML = html;
+}
+
+function fireConfetti() {
+    const colors = ['#1a237e', '#c62828', '#ffd54f', '#2e7d32', '#e53935', '#3949ab', '#f57f17'];
+    const container = document.body;
+    for (let i = 0; i < 60; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `
+            left: ${Math.random() * 100}vw;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            width: ${6 + Math.random() * 8}px;
+            height: ${6 + Math.random() * 8}px;
+            animation-delay: ${Math.random() * 0.5}s;
+            animation-duration: ${1.5 + Math.random() * 1.5}s;
+            border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        `;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+    }
+}
+
+function playSound(type) {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        if (type === 'success') {
+            osc.frequency.setValueAtTime(523, ctx.currentTime); // C5
+            osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1); // E5
+            osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2); // G5
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.4);
+        } else if (type === 'fail') {
+            osc.frequency.setValueAtTime(300, ctx.currentTime);
+            osc.frequency.setValueAtTime(250, ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'levelup') {
+            osc.frequency.setValueAtTime(523, ctx.currentTime);
+            osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+            osc.frequency.setValueAtTime(1047, ctx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.6);
+        }
+    } catch(e) { /* Audio not supported */ }
 }
 
 // ===== STATE =====
@@ -225,6 +426,7 @@ function loadState() {
     // Dam bao API key luon duoc giu lai
     state.deepseekApiKey = state.deepseekApiKey || '';
     checkStreak();
+    checkResetDailyProgress();
     generateDailyQuests();
 }
 function saveState() { try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch(e) {} }
@@ -410,6 +612,13 @@ function updateDashboard() {
     } else {
         document.getElementById('todayPlan').innerHTML = `🎉 Hoàn thành TOPIK 2 rồi! Ôn tập thôi!`;
     }
+    
+    renderDailyQuests();
+    renderAchievements();
+    
+    // Sync notification toggle state
+    const notifEl = document.getElementById('notifToggle');
+    if (notifEl) notifEl.checked = state.notificationsEnabled;
     
     updateGameUI();
 }
@@ -785,8 +994,12 @@ function doCompleteLesson(lessonId) {
     if (state.completedLessons.includes(lessonId)) { nextLesson(); return; }
     
     state.completedLessons.push(lessonId);
+    state.dailyProgress.lessons = (state.dailyProgress.lessons || 0) + 1;
     const leveledUp = addXP(50);
     markStudiedToday(); saveState();
+    
+    if (leveledUp) { fireConfetti(); playSound('levelup'); }
+    else { playSound('success'); }
     
     const lesson = lessonsData.find(l => l.id === lessonId);
     if (lesson) {
@@ -877,6 +1090,7 @@ function rateFlashcard(rating) {
         else if (state.vocabStatus[idx] === 'learning') state.vocabStatus[idx] = 'mastered';
     } else state.vocabStatus[idx] = 'new';
     
+    state.dailyProgress.flashcards = (state.dailyProgress.flashcards || 0) + 1;
     addXP(3); markStudiedToday(); saveState();
     currentFlashcardIndex++;
     if (currentFlashcardIndex >= filteredFlashcards.length) currentFlashcardIndex = 0;
@@ -941,10 +1155,13 @@ function checkExercise() {
     const correct = selectedExerciseOption === window._currentExercise.correctAnswer;
     if (correct) {
         state.exerciseScore.correct++; state.totalCorrect++;
+        state.dailyProgress.correct = (state.dailyProgress.correct || 0) + 1;
+        state.dailyProgress.exercises = (state.dailyProgress.exercises || 0) + 1;
         addXP(5);
         fb.textContent = '✅ Đúng! +5XP 🎮'; fb.className = 'exercise-feedback show correct';
         markStudiedToday();
     } else {
+        state.dailyProgress.exercises = (state.dailyProgress.exercises || 0) + 1;
         fb.textContent = `❌ Sai. Đáp án: "${window._currentExercise.correctAnswer}"`; fb.className = 'exercise-feedback show incorrect';
     }
     
@@ -1061,7 +1278,10 @@ function checkTopikListenAnswer(oi) {
         _topikListenCorrect++;
         state.exerciseScore.correct++;
         state.totalCorrect++;
+        state.dailyProgress.listening = (state.dailyProgress.listening || 0) + 1;
+        state.dailyProgress.correct = (state.dailyProgress.correct || 0) + 1;
         addXP(5);
+        playSound('success');
         fb.textContent = '✅ Đúng! +5XP 🎮';
         fb.className = 'exercise-feedback show correct';
         const newAch = checkAchievements();
@@ -1073,6 +1293,7 @@ function checkTopikListenAnswer(oi) {
         }
         setTimeout(() => { _topikListenIndex++; showTopikQuestion(); }, 1200);
     } else {
+        playSound('fail');
         fb.textContent = '❌ Sai. Đáp án: ' + q.options[q.answer] + '. Phát lại...';
         fb.className = 'exercise-feedback show incorrect';
         setTimeout(() => { speakKorean(q.script, 0.75); }, 800);
@@ -1119,7 +1340,10 @@ function checkListenWordAnswer(answer) {
         fb.textContent = '✅ Đúng! +5XP 🎮';
         fb.className = 'exercise-feedback show correct';
         state.exerciseScore.correct++; state.totalCorrect++;
+        state.dailyProgress.listening = (state.dailyProgress.listening || 0) + 1;
+        state.dailyProgress.correct = (state.dailyProgress.correct || 0) + 1;
         addXP(5);
+        playSound('success');
         const newAch = checkAchievements();
         if (newAch.length > 0) {
             setTimeout(() => newAch.forEach(id => {
@@ -1317,6 +1541,153 @@ function markStudiedToday() {
         state.studyDays.push(today);
         checkStreak();
     }
+    notifyStudied();
+}
+
+// ===== 🔔 NOTIFICATION REMINDERS =====
+function requestNotifPermission() {
+    if (!('Notification' in window)) return false;
+    if (Notification.permission === 'granted') return true;
+    if (Notification.permission === 'denied') {
+        showTooltip('⚠️ Đã tắt thông báo! Vào cài đặt trình duyệt để bật lại.');
+        return false;
+    }
+    try {
+        const result = Notification.requestPermission();
+        if (result && typeof result.then === 'function') {
+            return result.then(perm => perm === 'granted');
+        }
+        return Notification.permission === 'granted';
+    } catch(e) { return false; }
+}
+
+function showTooltip(msg) {
+    const el = document.createElement('div');
+    el.className = 'tooltip-msg';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.classList.add('show'), 10);
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 3000);
+}
+
+function showNotif(title, body) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    // Prevent spam: tối thiểu 2 phút giữa các notification
+    const now = Date.now();
+    if (state.notificationLastShown && now - state.notificationLastShown < 120000) return;
+    state.notificationLastShown = now;
+    saveState();
+    
+    try {
+        new Notification(title, {
+            body: body,
+            icon: '/favicon.ico',
+            tag: 'korean-quest'
+        });
+    } catch(e) {}
+}
+
+function toggleNotif() {
+    state.notificationsEnabled = !state.notificationsEnabled;
+    
+    if (state.notificationsEnabled) {
+        const perm = requestNotifPermission();
+        if (perm && typeof perm.then === 'function') {
+            perm.then(granted => {
+                if (granted) {
+                    startNotifReminder();
+                    saveState();
+                    updateDashboard();
+                    celebrate('🔔 Đã bật nhắc nhở học!');
+                } else {
+                    state.notificationsEnabled = false;
+                    saveState();
+                    updateDashboard();
+                }
+            });
+            return;
+        }
+        if (perm) {
+            startNotifReminder();
+            saveState();
+            updateDashboard();
+            celebrate('🔔 Đã bật nhắc nhở học!');
+        } else {
+            state.notificationsEnabled = false;
+            saveState();
+            updateDashboard();
+            showTooltip('⚠️ Không thể bật thông báo. Hãy kiểm tra cài đặt trình duyệt.');
+        }
+    } else {
+        cleanupNotifReminder();
+        saveState();
+        updateDashboard();
+        showTooltip('🔕 Đã tắt nhắc nhở');
+    }
+}
+
+function cleanupNotifReminder() {
+    if (window._notifInterval) {
+        clearInterval(window._notifInterval);
+        window._notifInterval = null;
+    }
+    if (window._notifHandler) {
+        document.removeEventListener('visibilitychange', window._notifHandler);
+        window._notifHandler = null;
+    }
+}
+
+function startNotifReminder() {
+    cleanupNotifReminder();
+    
+    // Kiểm tra ngay
+    checkAndRemind();
+    
+    // Kiểm tra mỗi 30 phút
+    window._notifInterval = setInterval(checkAndRemind, 30 * 60 * 1000);
+    
+    // Cũng check khi tab được focus lại
+    window._notifHandler = () => {
+        if (!document.hidden && state.notificationsEnabled) {
+            checkAndRemind();
+        }
+    };
+    document.addEventListener('visibilitychange', window._notifHandler);
+}
+
+function checkAndRemind() {
+    if (!state.notificationsEnabled) return;
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    
+    const today = new Date().toDateString();
+    const studied = state.studyDays.includes(today);
+    
+    if (!studied) {
+        const msgs = [
+            { title: '🇰🇷 Chưa học hôm nay!', body: 'Chỉ 5 phút thôi — vào học ngay →' },
+            { title: '🔥 Streak đang chờ!', body: `Bạn có streak ${state.streak.count} ngày. Đừng để mất!` },
+            { title: '⏰ Giờ học rồi!', body: 'Flashcard + Bài tập = 10 phút là xong!' },
+            { title: '🎯 Nhiệm vụ mới!', body: 'Daily Quests đang chờ bạn nhận thưởng XP!' },
+            { title: '💪 Cố lên!', body: 'Mỗi ngày một tí — TOPIK 2 đang đến gần!' }
+        ];
+        const msg = msgs[Math.floor(Math.random() * msgs.length)];
+        showNotif(msg.title, msg.body);
+    }
+}
+
+function notifyStudied() {
+    if (!state.notificationsEnabled || !('Notification' in window) || Notification.permission !== 'granted') return;
+    
+    const today = new Date().toDateString();
+    
+    const msgs = [
+        { title: '✅ Học rồi!', body: `Streak: ${state.streak.count} ngày! 🔥 Tiếp tục phát huy!` },
+        { title: '🎮 Chăm chỉ quá!', body: 'Cày XP trình độ cao đây! TOPIK 2 đang gọi bạn!' },
+        { title: '🔥 Rực lửa!', body: `Học hôm nay rồi! Streak ${state.streak.count} ngày — quá đỉnh!` },
+        { title: '🌟 Giỏi lắm!', body: 'Chỉ cần đều đặn mỗi ngày là bạn sẽ đạt TOPIK 2!' }
+    ];
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    showNotif(msg.title, msg.body);
 }
 
 // ===== 📄 READING COMPREHENSION =====
@@ -1441,7 +1812,9 @@ function checkReading() {
     if (correct >= total - 1) {
         fb.textContent = '🎉 Đúng ' + correct + '/' + total + '! +' + (correct * 5) + 'XP!';
         fb.className = 'exercise-feedback show correct';
+        state.dailyProgress.reading = (state.dailyProgress.reading || 0) + 1;
         addXP(correct * 5);
+        playSound('success');
         markStudiedToday();
         const newAch = checkAchievements();
         if (newAch.length > 0) {
@@ -1818,11 +2191,13 @@ function markGrammarLearned(id) {
     if (!state.grammarLearned) state.grammarLearned = [];
     if (!state.grammarLearned.includes(id)) {
         state.grammarLearned.push(id);
+        state.dailyProgress.grammar = (state.dailyProgress.grammar || 0) + 1;
         addXP(3);
         markStudiedToday();
         saveState();
         updateDashboard(); updateGameUI();
         celebrate('🎉 +3XP! Đã học ngữ pháp!');
+        playSound('success');
     }
     loadGrammar();
 }
@@ -1844,4 +2219,5 @@ window.loadReading = loadReading; window.selectReadingOption = selectReadingOpti
 window.loadWriting = loadWriting; window.checkWriting = checkWriting; window.showWritingAnswer = showWritingAnswer;
 window.startMockTest = startMockTest; window.answerMockTest = answerMockTest; window.nextMockTestQuestion = nextMockTestQuestion; window.goToMockTestQuestion = goToMockTestQuestion; window.restartMockTestWrong = restartMockTestWrong;
 window.loadGrammar = loadGrammar; window.filterGrammar = filterGrammar; window.openGrammarDetail = openGrammarDetail; window.markGrammarLearned = markGrammarLearned;
+window.claimQuest = claimQuest; window.fireConfetti = fireConfetti; window.playSound = playSound; window.toggleNotif = toggleNotif;
 console.log('🎮 Korean Quest loaded! Level', state.level, '•', state.xp, 'XP');

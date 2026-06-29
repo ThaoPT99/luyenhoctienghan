@@ -132,6 +132,27 @@
                         <button class="action-btn secondary" onclick="navigateTo('flashcard')">🃏 Ôn flashcard</button>
                     </div>
                 </div>
+                <div class="daily-quests">
+                    <h3>🎯 Nhiệm vụ hôm nay</h3>
+                    <div id="questList"></div>
+                </div>
+                <div class="notif-settings">
+                    <div class="notif-info">
+                        <span class="notif-icon">🔔</span>
+                        <div class="notif-text">
+                            <strong>Nhắc nhở học mỗi ngày</strong>
+                            <span class="notif-desc">Nhận thông báo nhắc học khi bạn chưa học hôm nay</span>
+                        </div>
+                    </div>
+                    <label class="toggle-switch" title="Bật/tắt nhắc nhở học">
+                        <input type="checkbox" id="notifToggle" onchange="toggleNotif()" />
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="achievements-section">
+                    <h3>🏆 Thành tựu <span class="ach-more" onclick="navigateTo('progress')">Xem tất cả →</span></h3>
+                    <div id="achievementList" class="achievement-grid"></div>
+                </div>
                 <div class="daily-tip">
                     <h4>💡 Mẹo nhỏ</h4>
                     <p id="dailyTip">60 phút mỗi ngày, 12 tháng → TOPIK 2!</p>
