@@ -66,6 +66,16 @@
             </div>
         </nav>
 
+        <!-- Mobile Header -->
+        <header id="mobile-header">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+            <span class="mobile-logo">🇰🇷 TOPIK 2</span>
+            <span class="mobile-streak">🔥 <span id="mobileStreakCount">0</span></span>
+        </header>
+
+        <!-- Sidebar Overlay (mobile) -->
+        <div id="sidebar-overlay"></div>
+
         <main id="main-content">
             <!-- ===== DASHBOARD ===== -->
             <section id="tab-dashboard" class="tab-content active">
@@ -438,6 +448,65 @@
             </section>
         </main>
     </div>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav id="bottom-nav">
+        <div class="bottom-nav-inner">
+            <button class="bn-item active" data-tab="dashboard">
+                <span class="bn-icon">🏠</span>
+                <span class="bn-label">Trang chủ</span>
+            </button>
+            <button class="bn-item" data-tab="roadmap">
+                <span class="bn-icon">🗺️</span>
+                <span class="bn-label">Lộ trình</span>
+            </button>
+            <button class="bn-item" data-tab="lessons">
+                <span class="bn-icon">📖</span>
+                <span class="bn-label">Bài học</span>
+            </button>
+            <button class="bn-item" data-tab="flashcard">
+                <span class="bn-icon">🃏</span>
+                <span class="bn-label">Flashcard</span>
+            </button>
+            <button class="bn-item" data-tab="exercises">
+                <span class="bn-icon">✍️</span>
+                <span class="bn-label">Bài tập</span>
+            </button>
+            <button class="bn-item" data-tab="listening">
+                <span class="bn-icon">🎧</span>
+                <span class="bn-label">Nghe</span>
+            </button>
+            <button class="bn-item" data-tab="reading">
+                <span class="bn-icon">📄</span>
+                <span class="bn-label">Đọc</span>
+            </button>
+            <button class="bn-item" data-tab="grammar">
+                <span class="bn-icon">📖</span>
+                <span class="bn-label">Ngữ pháp</span>
+            </button>
+            <button class="bn-item" data-tab="writing">
+                <span class="bn-icon">✏️</span>
+                <span class="bn-label">Viết</span>
+            </button>
+            <button class="bn-item" data-tab="mocktest">
+                <span class="bn-icon">📝</span>
+                <span class="bn-label">Thi thử</span>
+            </button>
+            <button class="bn-item" data-tab="vocabulary">
+                <span class="bn-icon">📚</span>
+                <span class="bn-label">Từ vựng</span>
+            </button>
+            <button class="bn-item" data-tab="progress">
+                <span class="bn-icon">📊</span>
+                <span class="bn-label">Tiến độ</span>
+            </button>
+            <button class="bn-item" data-tab="ai-tutor">
+                <span class="bn-icon">🤖</span>
+                <span class="bn-label">AI Tutor</span>
+            </button>
+        </div>
+    </nav>
+
     <script src="js/lessons.js"></script>
     <script src="js/vocab-bank.js"></script>
     <script src="js/vocab-bank-extra.js"></script>

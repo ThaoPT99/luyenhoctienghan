@@ -257,12 +257,64 @@ function celebrate(message) {
     setTimeout(() => el.remove(), 3000);
 }
 
+// ===== MOBILE NAVIGATION HANDLING =====
+function toggleSidebar(open) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (open) {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    } else {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+}
+
 // ===== NAVIGATION =====
 document.addEventListener('DOMContentLoaded', function() {
     loadState();
     
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() { navigateTo(this.dataset.tab); });
+        item.addEventListener('click', function() {
+            navigateTo(this.dataset.tab);
+            // Close sidebar on mobile after navigation
+            toggleSidebar(false);
+        });
+    });
+    
+    // Hamburger menu toggle
+    document.getElementById('hamburgerBtn')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const sidebar = document.getElementById('sidebar');
+        toggleSidebar(!sidebar.classList.contains('open'));
+    });
+    
+    // Sidebar overlay click to close
+    document.getElementById('sidebar-overlay')?.addEventListener('click', function() {
+        toggleSidebar(false);
+    });
+    
+    // Bottom nav click handling
+    document.querySelectorAll('.bn-item').forEach(item => {
+        item.addEventListener('click', function() {
+            navigateTo(this.dataset.tab);
+        });
+    });
+    
+    // Close sidebar on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            toggleSidebar(false);
+        }
+    });
+    
+    // Close sidebar on resize to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            toggleSidebar(false);
+        }
     });
     document.getElementById('flashcard')?.addEventListener('click', function() { this.classList.toggle('flipped'); });
     document.getElementById('aiInput')?.addEventListener('keydown', function(e) {
@@ -300,8 +352,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function navigateTo(tab) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.bn-item').forEach(n => n.classList.remove('active'));
     document.getElementById(`tab-${tab}`).classList.add('active');
     document.querySelector(`.nav-item[data-tab="${tab}"]`)?.classList.add('active');
+    document.querySelector(`.bn-item[data-tab="${tab}"]`)?.classList.add('active');
     if (tab === 'dashboard') updateDashboard();
     if (tab === 'roadmap') { renderRoadmap(); render12MonthRoadmap(); }
     if (tab === 'progress') updateProgress();
@@ -454,7 +508,7 @@ function render12MonthRoadmap() {
     container.insertAdjacentHTML('beforeend', html);
 }
 
-function renderRoadmap() { {
+function renderRoadmap() {
     const container = document.getElementById('roadmapTimeline');
     let html = `<div class="roadmap-header" style="text-align:center;padding:20px;background:var(--card);border-radius:var(--radius);margin-bottom:20px;box-shadow:var(--shadow);">
         <h2>🎮 Hành trình TOPIK 2</h2>
@@ -1239,6 +1293,7 @@ function updateProgress() {
     document.getElementById('motivationText').textContent = msg;
     
     document.getElementById('streakCount').textContent = state.streak.count;
+    document.getElementById('mobileStreakCount').textContent = state.streak.count;
     document.getElementById('sidebarWords').textContent = `${Object.keys(state.vocabStatus).length} từ`;
     document.getElementById('sidebarTopik').textContent = getTopikLevel().level;
 }
@@ -1789,5 +1844,4 @@ window.loadReading = loadReading; window.selectReadingOption = selectReadingOpti
 window.loadWriting = loadWriting; window.checkWriting = checkWriting; window.showWritingAnswer = showWritingAnswer;
 window.startMockTest = startMockTest; window.answerMockTest = answerMockTest; window.nextMockTestQuestion = nextMockTestQuestion; window.goToMockTestQuestion = goToMockTestQuestion; window.restartMockTestWrong = restartMockTestWrong;
 window.loadGrammar = loadGrammar; window.filterGrammar = filterGrammar; window.openGrammarDetail = openGrammarDetail; window.markGrammarLearned = markGrammarLearned;
-
 console.log('🎮 Korean Quest loaded! Level', state.level, '•', state.xp, 'XP');

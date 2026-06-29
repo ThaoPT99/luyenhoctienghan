@@ -171,80 +171,80 @@ const readingExtra = [
   {id:'R58',title:'An toàn thực phẩm',level:5,
    passage:'한국에서는 식품 안전에 대한 관심이 높습니다. 식품의약품안전처가 식품 안전을 관리합니다. 유전자 변형 식품(GMO)은 표시가 의무입니다. 유통기한이 지난 식품을 판매하면 심각한 처벌을 받습니다. 최근에는 친환경 유기농 제품의 인기가 높아지고 있습니다. 소비자들의 건강 의식이 높아졌기 때문입니다.',
    questions:[
-     {q:'Cơ quan nào quản lý an toàn thực phẩm Hàn?options:['Bộ Y tế','Cục An toàn Thực phẩm','Bộ Nông nghiệp','Sở Y tế'],answer:1},
-     {q:'Xu hướng thực phẩm nào đang lên?options:['Đồ hộp','Hữu cơ thân thiện môi trường','Đồ ăn nhanh','Đồ đông lạnh'],answer:1}
+     {q:'Cơ quan nào quản lý an toàn thực phẩm Hàn?',options:['Bộ Y tế','Cục An toàn Thực phẩm','Bộ Nông nghiệp','Sở Y tế'],answer:1},
+     {q:'Xu hướng thực phẩm nào đang lên?',options:['Đồ hộp','Hữu cơ thân thiện môi trường','Đồ ăn nhanh','Đồ đông lạnh'],answer:1}
    ]},
   {id:'R59',title:'Văn hóa xếp hàng Hàn Quốc',level:5,
    passage:'한국 사람들은 줄 서기를 잘합니다. 버스를 기다릴 때, 식당에 입장할 때, 계산을 할 때 모두 질서 있게 줄을 섭니다. 새치기는 한국 사회에서 용납되지 않는 행동입니다. 줄을 설 때는 앞 사람과 적당한 거리를 유지합니다. 이러한 문화는 한국 사회의 질서 의식을 보여줍니다.',
    questions:[
-     {q:'Hành vi nào không được chấp nhận ở Hàn?options:['Xếp hàng','Chen ngang','Đợi đến lượt','Giữ khoảng cách'],answer:1},
-     {q:'Văn hóa xếp hàng thể hiện điều gì?options:['Văn minh','Ý thức trật tự','Lịch sự','Tất cả đều đúng'],answer:3}
+     {q:'Hành vi nào không được chấp nhận ở Hàn?',options:['Xếp hàng','Chen ngang','Đợi đến lượt','Giữ khoảng cách'],answer:1},
+     {q:'Văn hóa xếp hàng thể hiện điều gì?',options:['Văn minh','Ý thức trật tự','Lịch sự','Tất cả đều đúng'],answer:3}
    ]},
   {id:'R60',title:'Tiếng Hàn và công nghệ',level:5,
    passage:'한국어는 IT 기술과 함께 발전하고 있습니다. 네이버와 카카오 같은 기업이 한국어 처리 기술을 선도하고 있습니다. 음성 인식, 기계 번역, 챗봇 등에 한국어가 적용되고 있습니다. 한국어 맞춤법 검사기도 AI 기술로 정확도가 높아졌습니다. 한국어를 배우는 외국인들에게 이러한 기술이 큰 도움이 됩니다.',
    questions:[
-     {q:'Công ty nào dẫn đầu xử lý tiếng Hàn công nghệ?options:['Samsung, LG','Naver, Kakao','Hyundai, SK','CJ, Lotte'],answer:1},
-     {q:'Công nghệ nào hỗ trợ người học tiếng Hàn?options:['Xe tự lái','Nhận dạng giọng nói, dịch máy','Thực tế ảo','Blockchain'],answer:1}
+     {q:'Công ty nào dẫn đầu xử lý tiếng Hàn công nghệ?',options:['Samsung, LG','Naver, Kakao','Hyundai, SK','CJ, Lotte'],answer:1},
+     {q:'Công nghệ nào hỗ trợ người học tiếng Hàn?',options:['Xe tự lái','Nhận dạng giọng nói, dịch máy','Thực tế ảo','Blockchain'],answer:1}
    ]},
   {id:'R61',title:'Trà đạo Hàn Quốc',level:5,
    passage:'한국의 다도는 오랜 역사를 가지고 있습니다. 한국 전통 차는 녹차가 가장 유명합니다. 보성과 하동이 대표적인 녹차 산지입니다. 한국의 다도는 자연과의 조화를 중요시합니다. 차를 마실 때는 천천히 마음의 여유를 가지는 것이 중요합니다. 요즘은 현대적인 찻집도 인기가 많습니다.',
    questions:[
-     {q:'Vùng trồng chè xanh nổi tiếng Hàn Quốc?options:['Jeju, Busan','Boseong, Hadong','Seoul, Incheon','Daegu, Ulsan'],answer:1},
-     {q:'Trà đạo Hàn Quốc coi trọng điều gì?options:['Hương vị','Hòa hợp với thiên nhiên','Màu sắc','Nhiệt độ'],answer:1}
+     {q:'Vùng trồng chè xanh nổi tiếng Hàn Quốc?',options:['Jeju, Busan','Boseong, Hadong','Seoul, Incheon','Daegu, Ulsan'],answer:1},
+     {q:'Trà đạo Hàn Quốc coi trọng điều gì?',options:['Hương vị','Hòa hợp với thiên nhiên','Màu sắc','Nhiệt độ'],answer:1}
    ]},
   {id:'R62',title:'Di sản văn hóa thế giới Hàn Quốc',level:5,
    passage:'한국에는 유네스코 세계문화유산이 많이 있습니다. 창덕궁, 경주 역사 지구, 제주 화산섬 등이 대표적입니다. 종묘 제례와 판소리는 무형문화유산으로 등재되었습니다. 한국 정부는 문화유산 보존에 많은 노력을 기울이고 있습니다. 이러한 유산들은 한국의 역사와 문화를 이해하는 중요한 자산입니다.',
    questions:[
-     {q:'Di sản UNESCO nào KHÔNG phải của Hàn?options:['Cung Changdeok','Khu lịch sử Gyeongju','Vạn lý trường thành','Đảo núi lửa Jeju'],answer:2},
-     {q:'Di sản văn hóa phi vật thể tiêu biểu?options:['K-pop','Pansori, Tế lễ Jongmyo','Ẩm thực','Thời trang'],answer:1}
+     {q:'Di sản UNESCO nào KHÔNG phải của Hàn?',options:['Cung Changdeok','Khu lịch sử Gyeongju','Vạn lý trường thành','Đảo núi lửa Jeju'],answer:2},
+     {q:'Di sản văn hóa phi vật thể tiêu biểu?',options:['K-pop','Pansori, Tế lễ Jongmyo','Ẩm thực','Thời trang'],answer:1}
    ]},
   {id:'R63',title:'Tác động của toàn cầu hóa',level:5,
    passage:'세계화는 한국 사회에 큰 변화를 가져왔습니다. 한국 기업들이 세계 시장에서 활동하고 있습니다. 외국인 노동자와 결혼 이민자도 증가하고 있습니다. 한국 사회가 다문화 사회로 변화하고 있습니다. 다양한 문화를 이해하고 존중하는 태도가 중요해졌습니다. 세계화는 한국인에게 새로운 기회와 도전을 제공하고 있습니다.',
    questions:[
-     {q:'Toàn cầu hóa mang lại thay đổi gì cho Hàn?options:['Đóng cửa','Xã hội đa văn hóa','Thuần nhất','Cô lập'],answer:1},
-     {q:'Điều gì đang tăng lên ở Hàn Quốc?options:['Xuất khẩu','Lao động nước ngoài, kết hôn đa văn hóa','Nhập khẩu','Du lịch'],answer:1}
+     {q:'Toàn cầu hóa mang lại thay đổi gì cho Hàn?',options:['Đóng cửa','Xã hội đa văn hóa','Thuần nhất','Cô lập'],answer:1},
+     {q:'Điều gì đang tăng lên ở Hàn Quốc?',options:['Xuất khẩu','Lao động nước ngoài, kết hôn đa văn hóa','Nhập khẩu','Du lịch'],answer:1}
    ]},
   {id:'R64',title:'Rừng và môi trường Hàn Quốc',level:5,
    passage:'한국 국토의 약 65%가 산림입니다. 1960년대에는 황폐했던 산이 성공적인 조림 사업으로 푸르게 변했습니다. 이것은 세계적으로 인정받은 환경 복원 사례입니다. 현재는 도시 내 숲과 공원을 조성하는 사업도 진행 중입니다. 서울숲, 여의도 공원이 대표적입니다. 숲은 휴식 공간으로서 중요한 역할을 합니다.',
    questions:[
-     {q:'Diện tích rừng Hàn Quốc chiếm bao nhiêu %?options:['45%','55%','65%','75%'],answer:2},
-     {q:'Dự án phục hồi rừng Hàn Quốc thế nào?options:['Không thành công','Được công nhận toàn cầu','Đang thực hiện','Đã hủy bỏ'],answer:1}
+     {q:'Diện tích rừng Hàn Quốc chiếm bao nhiêu %?',options:['45%','55%','65%','75%'],answer:2},
+     {q:'Dự án phục hồi rừng Hàn Quốc thế nào?',options:['Không thành công','Được công nhận toàn cầu','Đang thực hiện','Đã hủy bỏ'],answer:1}
    ]},
   {id:'R65',title:'Điện ảnh Hàn Quốc',level:5,
    passage:'한국 영화 산업은 세계적인 수준에 도달했습니다. 봉준호, 박찬욱 같은 감독이 국제적으로 인정받고 있습니다. 기생충은 한국 영화 최초로 칸 영화제 황금종려상을 받았습니다. 한국 영화의 특징은 독특한 스토리와 연출력입니다. 한국 정부도 영화 산업을 적극적으로 지원하고 있습니다. 매년 다양한 장르의 좋은 영화가 제작되고 있습니다.',
    questions:[
-     {q:'Đạo diễn Hàn nổi tiếng quốc tế?options:['Kim Ki-duk, Lee Chang-dong','Bong Joon-ho, Park Chan-wook','Hong Sang-soo, Na Hong-jin','Im Kwon-taek'],answer:1},
-     {q:'Parasite đoạt giải gì?options:['Oscar','Cành cọ vàng Cannes','Sư tử vàng Venice','Gấu vàng Berlin'],answer:1}
+     {q:'Đạo diễn Hàn nổi tiếng quốc tế?',options:['Kim Ki-duk, Lee Chang-dong','Bong Joon-ho, Park Chan-wook','Hong Sang-soo, Na Hong-jin','Im Kwon-taek'],answer:1},
+     {q:'Parasite đoạt giải gì?',options:['Oscar','Cành cọ vàng Cannes','Sư tử vàng Venice','Gấu vàng Berlin'],answer:1}
    ]},
   {id:'R66',title:'Thế hệ trẻ và tương lai',level:5,
    passage:'한국의 젊은 세대는 새로운 도전에 직면해 있습니다. 취업난과 주거비 부담이 큽니다. 많은 청년들이 결혼과 출산을 늦추거나 포기하고 있습니다. 하지만 창업에 도전하는 청년도 늘고 있습니다. 디지털 기술에 능숙한 MZ 세대는 새로운 문화를 만들어가고 있습니다. 워라밸을 중시하는 경향이 뚜렷합니다.',
    questions:[
-     {q:'Thách thức lớn nhất của thanh niên Hàn?options:['Khó xin việc, nhà ở đắt','Sức khỏe','Ngoại ngữ','Học tập'],answer:0},
-     {q:'Đặc điểm của thế hệ MZ tại Hàn?options:['Bảo thủ','Giỏi công nghệ số, coi trọng cân bằng','Thích truyền thống','Ít học'],answer:1}
+     {q:'Thách thức lớn nhất của thanh niên Hàn?',options:['Khó xin việc, nhà ở đắt','Sức khỏe','Ngoại ngữ','Học tập'],answer:0},
+     {q:'Đặc điểm của thế hệ MZ tại Hàn?',options:['Bảo thủ','Giỏi công nghệ số, coi trọng cân bằng','Thích truyền thống','Ít học'],answer:1}
    ]},
   {id:'R67',title:'Năng lượng tái tạo và tương lai',level:5,
    passage:'한국은 재생 에너지 비중을 늘리기 위해 노력하고 있습니다. 태양광과 풍력 발전이 확대되고 있습니다. 특히 서해안과 남해안에 대규모 해상 풍력 단지를 조성 중입니다. 원자력 발전도 여전히 중요한 에너지원입니다. 2030년까지 재생 에너지 비중을 20%까지 늘리는 것이 목표입니다. 에너지 전환은 한국의 중요한 과제입니다.',
    questions:[
-     {q:'Loại năng lượng tái tạo nào đang mở rộng?options:['Thủy điện','Điện mặt trời và gió','Sinh khối','Địa nhiệt'],answer:1},
-     {q:'Mục tiêu tỷ lệ năng lượng tái tạo 2030?options:['10%','20%','30%','50%'],answer:1}
+     {q:'Loại năng lượng tái tạo nào đang mở rộng?',options:['Thủy điện','Điện mặt trời và gió','Sinh khối','Địa nhiệt'],answer:1},
+     {q:'Mục tiêu tỷ lệ năng lượng tái tạo 2030?',options:['10%','20%','30%','50%'],answer:1}
    ]},
   {id:'R68',title:'Hội nhập kinh tế quốc tế',level:5,
    passage:'한국은 세계 경제에 적극적으로 참여하고 있습니다. WTO, OECD, G20 등 국제 기구의 회원국입니다. 많은 국가와 FTA(자유 무역 협정)를 체결했습니다. 한미 FTA, 한-EU FTA, 한-중 FTA 등이 대표적입니다. 최근에는 CPTPP 가입도 추진하고 있습니다. 무역 의존도가 높은 한국은 국제 경제 환경 변화에 민감합니다.',
    questions:[
-     {q:'Hàn Quốc không phải thành viên của tổ chức nào?options:['WTO','OPEC','OECD','G20'],answer:1},
-     {q:'Hàn Quốc có FTA với những nước nào?options:['Mỹ, EU, Trung','Nhật, Ấn','Nga, Brazil','Úc, Canada'],answer:0}
+     {q:'Hàn Quốc không phải thành viên của tổ chức nào?',options:['WTO','OPEC','OECD','G20'],answer:1},
+     {q:'Hàn Quốc có FTA với những nước nào?',options:['Mỹ, EU, Trung','Nhật, Ấn','Nga, Brazil','Úc, Canada'],answer:0}
    ]},
   {id:'R69',title:'Tác động của COVID-19',level:5,
    passage:'코로나19 팬데믹은 한국 사회에 큰 변화를 가져왔습니다. 비대면 문화가 빠르게 확산되었습니다. 재택 근무, 온라인 수업이 일상화되었습니다. 한국은 K-방역으로 세계적인 주목을 받았습니다. 빠른 검사와 확진자 추적 시스템이 효과적이었습니다. 경제적 피해도 있었지만 디지털 전환이 가속화되는 계기가 되었습니다.',
    questions:[
-     {q:'Hàn Quốc nổi tiếng về phòng chống COVID thế nào?options:['Phong tỏa','K-phòng dịch: xét nghiệm nhanh, truy vết','Tiêm chủng sớm','Cách ly cứng'],answer:1},
-     {q:'Thay đổi lớn sau COVID tại Hàn?options:['Ít thay đổi','Văn hóa không tiếp xúc, làm việc từ xa','Đóng cửa','Nhập cư giảm'],answer:1}
+     {q:'Hàn Quốc nổi tiếng về phòng chống COVID thế nào?',options:['Phong tỏa','K-phòng dịch: xét nghiệm nhanh, truy vết','Tiêm chủng sớm','Cách ly cứng'],answer:1},
+     {q:'Thay đổi lớn sau COVID tại Hàn?',options:['Ít thay đổi','Văn hóa không tiếp xúc, làm việc từ xa','Đóng cửa','Nhập cư giảm'],answer:1}
    ]},
   {id:'R70',title:'Tương lai tiếng Hàn trên thế giới',level:5,
    passage:'한국어의 위상이 점점 높아지고 있습니다. 전 세계에서 한국어 학습자가 지속적으로 증가하고 있습니다. 한국어는 미국 대학에서 13번째로 많이 배우는 언어입니다. 세종학당이 전 세계 80여 개국에 설립되었습니다. K-pop, K-드라마, K-영화의 인기가 한국어 학습 수요를 견인하고 있습니다. 한국어의 미래는 밝습니다.',
    questions:[
-     {q:'Tiếng Hàn đứng thứ mấy trong các ngôn ngữ được học tại Mỹ?options:['10','13','15','20'],answer:1},
-     {q:'Tổ chức nào dạy tiếng Hàn trên toàn cầu?options:['Bộ Giáo dục','King Sejong Institute','Đại học Hàn','Naver'],answer:1}
+     {q:'Tiếng Hàn đứng thứ mấy trong các ngôn ngữ được học tại Mỹ?',options:['10','13','15','20'],answer:1},
+     {q:'Tổ chức nào dạy tiếng Hàn trên toàn cầu?',options:['Bộ Giáo dục','King Sejong Institute','Đại học Hàn','Naver'],answer:1}
    ]}
 ];
 
