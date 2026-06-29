@@ -19,8 +19,11 @@
                 <div class="nav-item active" data-tab="dashboard">
                     <span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span>
                 </div>
+                <div class="nav-item" data-tab="study-now">
+                    <span class="nav-icon">🎯</span><span class="nav-label">Học ngay</span><span class="nav-badge">HOT</span>
+                </div>
                 <div class="nav-item" data-tab="roadmap">
-                    <span class="nav-icon">🗺️</span><span class="nav-label">Lộ trình</span><span class="nav-badge">NEW</span>
+                    <span class="nav-icon">🗺️</span><span class="nav-label">Lộ trình</span>
                 </div>
                 <div class="nav-item" data-tab="lessons">
                     <span class="nav-icon">📖</span><span class="nav-label">Bài học</span>
@@ -156,6 +159,105 @@
                 <div class="daily-tip">
                     <h4>💡 Mẹo nhỏ</h4>
                     <p id="dailyTip">60 phút mỗi ngày, 12 tháng → TOPIK 2!</p>
+                </div>
+            </section>
+
+            <!-- ===== STUDY NOW ===== -->
+            <section id="tab-study-now" class="tab-content">
+                <div class="tab-header">
+                    <h2>🎯 Học ngay</h2>
+                    <span class="study-flow-badge" id="studyFlowBadge">Luồng học tự động</span>
+                </div>
+                
+                <!-- Study Flow Container -->
+                <div id="studyFlowContainer">
+                    <!-- Welcome / Start -->
+                    <div id="studyFlowStart" class="study-flow-start">
+                        <div class="study-welcome">
+                            <div class="study-welcome-icon">🎯</div>
+                            <h3>Luồng học tự động</h3>
+                            <p>Một chạm — học tất cả: <strong>Bài học → Ôn từ → Luyện tập → Kiểm tra</strong></p>
+                            <div class="study-stats-preview" id="studyPreviewStats">
+                                <span>📖 Bài tiếp theo: Bài 1</span>
+                                <span>🔥 Streak: 0 ngày</span>
+                                <span>⚡ Level: 1</span>
+                            </div>
+                            <button class="study-start-btn" onclick="studyFlow.start()">
+                                <span>🚀 BẮT ĐẦU HỌC</span>
+                                <span class="study-start-sub">Học bài → Từ vựng → Bài tập trong 1 luồng</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Study Flow Active -->
+                    <div id="studyFlowActive" class="study-flow-active" style="display:none;">
+                        <!-- Progress bar -->
+                        <div class="study-progress-bar">
+                            <div class="study-progress-step active" data-step="1">
+                                <span class="step-icon">📖</span>
+                                <span class="step-label">Học bài</span>
+                            </div>
+                            <div class="study-progress-connector"></div>
+                            <div class="study-progress-step" data-step="2">
+                                <span class="step-icon">🃏</span>
+                                <span class="step-label">Ôn từ</span>
+                            </div>
+                            <div class="study-progress-connector"></div>
+                            <div class="study-progress-step" data-step="3">
+                                <span class="step-icon">✍️</span>
+                                <span class="step-label">Luyện tập</span>
+                            </div>
+                            <div class="study-progress-connector"></div>
+                            <div class="study-progress-step" data-step="4">
+                                <span class="step-icon">✅</span>
+                                <span class="step-label">Hoàn thành</span>
+                            </div>
+                        </div>
+
+                        <!-- Lesson info bar -->
+                        <div class="study-lesson-info" id="studyLessonInfo">
+                            <span class="study-lesson-badge">Bài 1</span>
+                            <span class="study-lesson-title">Tên bài học</span>
+                            <span class="study-lesson-xp">+100XP 🎮</span>
+                            <button class="study-quit-btn" onclick="studyFlow.quit()">✕ Thoát</button>
+                        </div>
+
+                        <!-- Content area -->
+                        <div class="study-content" id="studyContent"></div>
+
+                        <!-- Navigation -->
+                        <div class="study-nav" id="studyNav">
+                            <button class="study-nav-btn secondary" id="studyPrevBtn" onclick="studyFlow.prev()" style="visibility:hidden;">← Quay lại</button>
+                            <button class="study-nav-btn primary" id="studyNextBtn" onclick="studyFlow.next()">Tiếp theo →</button>
+                        </div>
+                    </div>
+
+                    <!-- Study Complete -->
+                    <div id="studyFlowComplete" class="study-flow-complete" style="display:none;">
+                        <div class="study-result">
+                            <div class="study-result-icon">🎉</div>
+                            <h3>Bài học hoàn thành!</h3>
+                            <div class="study-result-stats">
+                                <div class="result-stat">
+                                    <span class="result-value" id="studyResultXP">+50</span>
+                                    <span class="result-label">XP nhận được</span>
+                                </div>
+                                <div class="result-stat">
+                                    <span class="result-value" id="studyResultVocab">0</span>
+                                    <span class="result-label">Từ đã ôn</span>
+                                </div>
+                                <div class="result-stat">
+                                    <span class="result-value" id="studyResultCorrect">0/0</span>
+                                    <span class="result-label">Bài tập đúng</span>
+                                </div>
+                            </div>
+                            <div class="study-result-actions">
+                                <button class="study-start-btn" onclick="studyFlow.nextLesson()">📖 Bài tiếp theo</button>
+                                <button class="study-nav-btn secondary" onclick="studyFlow.restart()">🔄 Học lại bài này</button>
+                                <button class="study-nav-btn secondary" onclick="studyFlow.quit()">🏠 Về Dashboard</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -476,6 +578,10 @@
             <button class="bn-item active" data-tab="dashboard">
                 <span class="bn-icon">🏠</span>
                 <span class="bn-label">Trang chủ</span>
+            </button>
+            <button class="bn-item" data-tab="study-now">
+                <span class="bn-icon">🎯</span>
+                <span class="bn-label">Học ngay</span>
             </button>
             <button class="bn-item" data-tab="roadmap">
                 <span class="bn-icon">🗺️</span>

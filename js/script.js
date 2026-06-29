@@ -567,6 +567,7 @@ function navigateTo(tab) {
     if (tab === 'writing') loadWriting();
     if (tab === 'mocktest') {} // wait for user to click start
     if (tab === 'grammar') loadGrammar();
+    if (tab === 'study-now') studyFlow.updatePreviewStats();
 }
 
 // ===== DASHBOARD =====
@@ -2206,7 +2207,468 @@ function filterGrammar() {
     loadGrammar();
 }
 
+// ===== 🎯 STUDY FLOW ENGINE =====
+const studyFlow = {
+    lesson: null,
+    stage: 0, // 0=start, 1=learn, 2=review, 3=quiz, 4=complete
+    vocabIndex: 0,
+    quizIndex: 0,
+    quizCorrect: 0,
+    quizTotal: 0,
+    quizAnswered: false,
+    vocabReviewed: 0,
+
+    getNextLesson() {
+        for (let i = 0; i < lessonsData.length; i++) {
+            if (!state.completedLessons.includes(lessonsData[i].id)) {
+                return lessonsData[i];
+            }
+        }
+        return lessonsData[lessonsData.length - 1];
+    },
+
+    start() {
+        this.lesson = this.getNextLesson();
+        this.stage = 1;
+        this.vocabIndex = 0;
+        this.quizIndex = 0;
+        this.quizCorrect = 0;
+        this.quizTotal = 0;
+        this.quizAnswered = false;
+        this.vocabReviewed = 0;
+
+        document.getElementById('studyFlowStart').style.display = 'none';
+        document.getElementById('studyFlowActive').style.display = 'block';
+        document.getElementById('studyFlowComplete').style.display = 'none';
+
+        this.updateLessonInfo();
+        this.renderStage();
+    },
+
+    updateLessonInfo() {
+        document.querySelector('.study-lesson-badge').textContent = `Bài ${this.lesson.id}`;
+        document.querySelector('.study-lesson-title').textContent = this.lesson.title;
+    },
+
+    renderStage() {
+        // Update progress steps
+        document.querySelectorAll('.study-progress-step').forEach((el, i) => {
+            const stepNum = i + 1;
+            el.classList.toggle('active', stepNum === this.stage);
+            el.classList.toggle('done', stepNum < this.stage);
+        });
+
+        switch (this.stage) {
+            case 1: this.renderLearn(); break;
+            case 2: this.renderReview(); break;
+            case 3: this.renderQuiz(); break;
+            case 4: this.renderComplete(); break;
+        }
+
+        // Update nav buttons
+        const prevBtn = document.getElementById('studyPrevBtn');
+        const nextBtn = document.getElementById('studyNextBtn');
+        if (this.stage === 1) {
+            prevBtn.style.visibility = 'hidden';
+        } else {
+            prevBtn.style.visibility = 'visible';
+        }
+        if (this.stage === 4) {
+            nextBtn.textContent = '🎉 Hoàn thành';
+            nextBtn.disabled = false;
+        } else if (this.stage === 3 && !this.quizAnswered) {
+            nextBtn.textContent = '✍️ Chọn đáp án';
+            nextBtn.disabled = true;
+        } else if (this.stage === 3) {
+            nextBtn.textContent = this.quizIndex >= this.lesson.vocab.length ? '✅ Xem kết quả' : 'Câu tiếp →';
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.textContent = 'Tiếp theo →';
+            nextBtn.disabled = false;
+        }
+    },
+
+    renderLearn() {
+        const lesson = this.lesson;
+        const vocabCards = lesson.vocab.slice(0, 12).map(v => `
+            <div class="study-vocab-item" onclick="speakKorean('${v.kr.replace(/'/g, "\\'")}')">
+                <div class="sv-kr">${v.kr}</div>
+                <div class="sv-pron">${v.pronunciation}</div>
+                <div class="sv-mean">${v.meaning}</div>
+            </div>
+        `).join('');
+
+        const grammarHTML = lesson.grammar.slice(0, 2).map(g => `
+            <div class="study-grammar-card">
+                <h4>📖 ${g.title}</h4>
+                <p>${g.content.substring(0, 200)}</p>
+                ${g.example ? `<div class="grammar-example" onclick="speakKorean('${g.example.replace(/'/g, "\\'")}')">📝 ${g.example} 🔊</div>` : ''}
+            </div>
+        `).join('');
+
+        const examplesHTML = lesson.examples.slice(0, 5).map(e => `
+            <div class="study-example-item" onclick="speakKorean('${e.kr.replace(/'/g, "\\'")}')">
+                <span class="se-kr">${e.kr}</span>
+                <span class="se-vi">${e.vi}</span>
+            </div>
+        `).join('');
+
+        document.getElementById('studyContent').innerHTML = `
+            <div class="study-section-title">
+                <h3>📖 Học bài: ${lesson.title}</h3>
+                <p style="color:var(--text-secondary);font-size:14px;margin-top:4px;">${lesson.description} • Click vào từ để nghe 🔊</p>
+            </div>
+            <h4 style="margin-top:20px;margin-bottom:10px;">📝 Từ vựng (${lesson.vocab.length} từ)</h4>
+            <div class="study-vocab-list">${vocabCards}</div>
+            <h4 style="margin-top:24px;margin-bottom:10px;">📖 Ngữ pháp</h4>
+            ${grammarHTML}
+            <h4 style="margin-top:24px;margin-bottom:10px;">💡 Ví dụ</h4>
+            <div class="study-examples-list">${examplesHTML}</div>
+            <div style="text-align:center;margin-top:20px;padding:12px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--text-light);">
+                ✅ Đã xem xong nội dung bài? Nhấn "Tiếp theo" để ôn từ vựng!
+            </div>
+        `;
+    },
+
+    renderReview() {
+        const lesson = this.lesson;
+        if (lesson.vocab.length === 0) {
+            this.stage = 3;
+            this.renderStage();
+            return;
+        }
+
+        const idx = Math.min(this.vocabIndex, lesson.vocab.length - 1);
+        const v = lesson.vocab[idx];
+        const total = lesson.vocab.length;
+        const pct = Math.round((idx + 1) / total * 100);
+
+        document.getElementById('studyContent').innerHTML = `
+            <div style="text-align:center;margin-bottom:12px;">
+                <div style="font-size:13px;color:var(--text-secondary);">🃏 Ôn từ • ${idx + 1}/${total}</div>
+                <div class="study-q-progress">
+                    <div class="study-q-progress-fill" style="width:${pct}%"></div>
+                </div>
+            </div>
+            <div class="study-card-container">
+                <div class="study-card" id="studyReviewCard" onclick="this.classList.toggle('flipped')">
+                    <span class="sc-counter">${idx + 1}/${total}</span>
+                    <div class="sc-word">${v.kr}</div>
+                    <div class="sc-pron">${v.pronunciation || ''}</div>
+                    <div class="sc-hint">👆 Nhấn để xem nghĩa</div>
+                </div>
+                <div class="study-card-actions">
+                    <button class="fc-btn forget" onclick="studyFlow.reviewWord(0)">🔄 Nhắc lại</button>
+                    <button class="fc-btn good" onclick="studyFlow.reviewWord(1)">✅ Đã nhớ</button>
+                </div>
+            </div>
+        `;
+
+        // After rendering, auto-flip to show meaning after a moment
+        setTimeout(() => {
+            const card = document.getElementById('studyReviewCard');
+            if (card) {
+                card.classList.add('flipped');
+                card.innerHTML = `
+                    <span class="sc-counter">${idx + 1}/${total}</span>
+                    <div class="sc-word">${v.meaning}</div>
+                    <div class="sc-pron">${v.kr}</div>
+                    <div class="sc-hint">👆 Nhấn để quay lại</div>
+                `;
+            }
+        }, 1200);
+    },
+
+    reviewWord(rating) {
+        this.vocabReviewed++;
+        // Mark vocab as learned in state
+        const lesson = this.lesson;
+        if (this.vocabIndex < lesson.vocab.length) {
+            const v = lesson.vocab[this.vocabIndex];
+            const idx = allVocabulary.findIndex(w => w.kr === v.kr);
+            if (idx >= 0) {
+                if (rating >= 1) {
+                    const curr = state.vocabStatus[idx];
+                    if (!curr || curr === 'new') state.vocabStatus[idx] = 'learning';
+                    else if (curr === 'learning') state.vocabStatus[idx] = 'mastered';
+                } else {
+                    state.vocabStatus[idx] = 'new';
+                }
+            }
+        }
+        this.vocabIndex++;
+        if (this.vocabIndex >= lesson.vocab.length) {
+            this.next();
+        } else {
+            this.renderReview();
+        }
+    },
+
+    renderQuiz() {
+        const lesson = this.lesson;
+        if (lesson.vocab.length < 3) {
+            // Not enough vocab, skip quiz
+            this.stage = 4;
+            this.renderComplete();
+            return;
+        }
+
+        // Get current quiz word
+        const vocabItems = [...lesson.vocab].sort(() => Math.random() - 0.5);
+        const qIdx = this.quizIndex;
+        if (qIdx >= Math.min(lesson.vocab.length, 5)) {
+            this.stage = 4;
+            this.renderComplete();
+            return;
+        }
+
+        // Store shuffled vocab for consistent questions
+        if (!this._quizVocab) {
+            this._quizVocab = vocabItems.slice(0, Math.min(lesson.vocab.length, 5));
+            this.quizTotal = this._quizVocab.length;
+        }
+
+        const q = this._quizVocab[qIdx];
+        if (!q) {
+            this.stage = 4;
+            this.renderComplete();
+            return;
+        }
+
+        // Generate options
+        const correct = q.meaning;
+        const wrongs = allVocabulary
+            .filter(v => v.meaning !== correct)
+            .map(v => v.meaning)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3);
+        const options = [correct, ...wrongs].sort(() => Math.random() - 0.5);
+
+        const pct = Math.round((qIdx) / this.quizTotal * 100);
+        this.quizAnswered = false;
+        window._studyQuizAnswer = correct;
+
+        document.getElementById('studyContent').innerHTML = `
+            <div style="text-align:center;margin-bottom:12px;">
+                <div style="font-size:13px;color:var(--text-secondary);">✍️ Luyện tập • ${qIdx + 1}/${this.quizTotal}</div>
+                <div class="study-q-progress">
+                    <div class="study-q-progress-fill" style="width:${pct}%"></div>
+                </div>
+            </div>
+            <div class="study-quiz-question">
+                <div class="sq-kr">${q.kr}</div>
+                <div class="sq-prompt">Từ này có nghĩa là gì?</div>
+            </div>
+            <div class="study-quiz-options">
+                ${options.map((opt, i) => `
+                    <div class="study-quiz-option" onclick="studyFlow.checkQuiz(this, '${opt.replace(/'/g, "\\'")}')">${opt}</div>
+                `).join('')}
+            </div>
+            <div id="studyQuizFeedback" style="text-align:center;margin-top:12px;font-size:14px;font-weight:600;min-height:24px;"></div>
+        `;
+    },
+
+    checkQuiz(el, answer) {
+        if (this.quizAnswered) return;
+        this.quizAnswered = true;
+
+        const correct = window._studyQuizAnswer;
+        const isCorrect = answer === correct;
+        if (isCorrect) this.quizCorrect++;
+
+        // Mark options
+        document.querySelectorAll('.study-quiz-option').forEach(o => {
+            const val = o.textContent;
+            if (val === correct) o.classList.add('correct');
+            else if (o === el && !isCorrect) o.classList.add('incorrect');
+            o.style.cursor = 'default';
+            o.onclick = null;
+        });
+        if (el) el.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+        const fb = document.getElementById('studyQuizFeedback');
+        if (isCorrect) {
+            fb.textContent = '✅ Đúng! +5XP';
+            fb.style.color = 'var(--success)';
+            state.exerciseScore.correct++;
+        } else {
+            fb.textContent = `❌ Đáp án: ${correct}`;
+            fb.style.color = 'var(--error)';
+        }
+        state.exerciseScore.total++;
+        state.dailyProgress.exercises = (state.dailyProgress.exercises || 0) + 1;
+        if (isCorrect) {
+            state.dailyProgress.correct = (state.dailyProgress.correct || 0) + 1;
+        }
+        saveState();
+
+        // Enable next button
+        const nextBtn = document.getElementById('studyNextBtn');
+        nextBtn.disabled = false;
+        if (this.quizIndex >= this.quizTotal - 1) {
+            nextBtn.textContent = '✅ Xem kết quả';
+        } else {
+            nextBtn.textContent = 'Câu tiếp →';
+        }
+    },
+
+    renderComplete() {
+        const lesson = this.lesson;
+        const totalXP = 50 + (this.quizCorrect * 5) + (this.vocabReviewed * 2);
+
+        // Award XP and mark lesson complete
+        if (!state.completedLessons.includes(lesson.id)) {
+            state.completedLessons.push(lesson.id);
+            state.dailyProgress.lessons = (state.dailyProgress.lessons || 0) + 1;
+            state.dailyProgress.flashcards = (state.dailyProgress.flashcards || 0) + this.vocabReviewed;
+            const leveledUp = addXP(totalXP);
+            markStudiedToday();
+            saveState();
+
+            if (leveledUp) { fireConfetti(); playSound('levelup'); }
+            else { playSound('success'); }
+
+            const newAch = checkAchievements();
+            if (newAch.length > 0) {
+                setTimeout(() => newAch.forEach(id => {
+                    const a = ACHIEVEMENTS_LIST.find(x => x.id === id);
+                    if (a) celebrate(`${a.icon} MỞ KHÓA: ${a.name}! ${a.desc}`);
+                }), 1500);
+            }
+
+            updateDashboard();
+            updateProgress();
+            renderLessonList();
+            renderRoadmap();
+            renderVocab();
+            updateGameUI();
+        }
+
+        document.getElementById('studyFlowActive').style.display = 'none';
+        document.getElementById('studyFlowComplete').style.display = 'block';
+
+        document.getElementById('studyResultXP').textContent = `+${totalXP}`;
+        document.getElementById('studyResultVocab').textContent = `${this.vocabReviewed}`;
+        document.getElementById('studyResultCorrect').textContent = `${this.quizCorrect}/${this.quizTotal}`;
+
+        // Show confetti if passed quiz
+        if (this.quizCorrect >= this.quizTotal * 0.7) {
+            fireConfetti();
+        }
+
+        const topikInfo = getTopikLevel();
+        const nextLesson = this.getNextLesson();
+        let msg = `🎉 Bài ${lesson.id} hoàn thành! `;
+        if (nextLesson.id !== lesson.id) {
+            msg += `Bài tiếp theo: <strong>${nextLesson.title}</strong>`;
+        } else {
+            msg += `🎊 Bạn đã hoàn thành TẤT CẢ 45 bài! TOPIK 2 đang chờ!`;
+        }
+        document.querySelector('.study-result h3').innerHTML = msg;
+
+        // Clean up quiz data
+        this._quizVocab = null;
+        window._studyQuizAnswer = null;
+    },
+
+    next() {
+        if (this.stage === 3 && !this.quizAnswered && this.quizIndex < this.quizTotal) {
+            return; // Must answer first
+        }
+        if (this.stage === 3 && this.quizAnswered) {
+            this.quizIndex++;
+            this.quizAnswered = false;
+            if (this.quizIndex >= this.quizTotal) {
+                this.stage = 4;
+                this.renderComplete();
+                return;
+            }
+            this.renderQuiz();
+            return;
+        }
+        if (this.stage < 4) {
+            this.stage++;
+            this.renderStage();
+        } else {
+            this.renderComplete();
+        }
+    },
+
+    prev() {
+        if (this.stage > 1) {
+            this.stage--;
+            if (this.stage === 3) {
+                this.quizIndex = Math.max(0, this.quizIndex - 1);
+                this.quizAnswered = true; // Allow going back
+            }
+            this.renderStage();
+        }
+    },
+
+
+    nextLesson() {
+        // Find next lesson
+        const next = this.getNextLesson();
+        if (next && next.id !== this.lesson.id) {
+            document.getElementById('studyFlowComplete').style.display = 'none';
+            document.getElementById('studyFlowActive').style.display = 'block';
+            this.lesson = next;
+            this.stage = 1;
+            this.vocabIndex = 0;
+            this.quizIndex = 0;
+            this.quizCorrect = 0;
+            this.quizTotal = 0;
+            this.quizAnswered = false;
+            this.vocabReviewed = 0;
+            this._quizVocab = null;
+            this.updateLessonInfo();
+            this.renderStage();
+        } else {
+            celebrate('🎊 TẤT CẢ BÀI ĐÃ HOÀN THÀNH! TOPIK 2 CHỜ BẠN!');
+            this.quit();
+        }
+    },
+
+    restart() {
+        document.getElementById('studyFlowComplete').style.display = 'none';
+        document.getElementById('studyFlowActive').style.display = 'block';
+        this.stage = 1;
+        this.vocabIndex = 0;
+        this.quizIndex = 0;
+        this.quizCorrect = 0;
+        this.quizTotal = 0;
+        this.quizAnswered = false;
+        this.vocabReviewed = 0;
+        this._quizVocab = null;
+        this.updateLessonInfo();
+        this.renderStage();
+    },
+
+    quit() {
+        document.getElementById('studyFlowStart').style.display = 'block';
+        document.getElementById('studyFlowActive').style.display = 'none';
+        document.getElementById('studyFlowComplete').style.display = 'none';
+        this._quizVocab = null;
+        window._studyQuizAnswer = null;
+        updateDashboard();
+    },
+
+    updatePreviewStats() {
+        const next = this.getNextLesson();
+        const el = document.getElementById('studyPreviewStats');
+        if (el) {
+            el.innerHTML = `
+                <span>📖 Bài tiếp theo: <strong>Bài ${next.id}: ${next.title}</strong></span>
+                <span>🔥 Streak: <strong>${state.streak.count}</strong> ngày</span>
+                <span>⚡ Level: <strong>${state.level}</strong></span>
+            `;
+        }
+    }
+};
+
 // ===== EXPORT =====
+window.studyFlow = studyFlow;
 window.navigateTo = navigateTo; window.openLesson = openLesson; window.closeLesson = closeLesson;
 window.completeLesson = completeLesson; window.nextLesson = nextLesson; window.prevLesson = prevLesson;
 window.filterFlashcards = filterFlashcards; window.rateFlashcard = rateFlashcard;

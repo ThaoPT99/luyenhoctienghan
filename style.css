@@ -2309,6 +2309,710 @@ html, body {
     transform: scale(0.98);
 }
 
+/* ===== 🎯 STUDY FLOW (Học ngay) ===== */
+.study-flow-start {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.study-welcome {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.study-welcome-icon {
+    font-size: 72px;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.study-welcome h3 {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: var(--header-font);
+    margin-bottom: 8px;
+}
+
+.study-welcome p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.study-stats-preview {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.study-stats-preview span {
+    background: var(--card);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.study-start-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 18px 40px;
+    border: none;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: var(--body-font);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(26,35,126,0.3);
+    touch-action: manipulation;
+}
+
+.study-start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(26,35,126,0.4);
+}
+
+.study-start-btn:active {
+    transform: scale(0.97);
+}
+
+.study-start-sub {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+/* Progress Bar */
+.study-progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 8px;
+    padding: 12px 0;
+}
+
+.study-progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    opacity: 0.4;
+    transition: var(--transition);
+}
+
+.study-progress-step.active {
+    opacity: 1;
+}
+
+.study-progress-step.done {
+    opacity: 0.7;
+}
+
+.study-progress-step.done .step-icon {
+    background: var(--success);
+}
+
+.study-progress-step.active .step-icon {
+    background: var(--primary);
+    box-shadow: 0 0 0 4px rgba(26,35,126,0.2);
+    animation: pulse-icon 2s infinite;
+}
+
+@keyframes pulse-icon {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(26,35,126,0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(26,35,126,0.1); }
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: var(--transition);
+}
+
+.step-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.study-progress-connector {
+    width: 48px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 4px;
+    margin-bottom: 20px;
+    transition: var(--transition);
+}
+
+.study-progress-step.done ~ .study-progress-connector,
+.study-progress-step.active ~ .study-progress-connector {
+    background: var(--primary-light);
+}
+
+/* Lesson Info Bar */
+.study-lesson-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    background: var(--card);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+}
+
+.study-lesson-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--primary);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.study-lesson-title {
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+}
+
+.study-lesson-xp {
+    font-size: 12px;
+    font-weight: 700;
+    color: #e65100;
+    background: linear-gradient(135deg, #fff8e1, #ffe0b2);
+    padding: 4px 10px;
+    border-radius: 16px;
+    white-space: nowrap;
+}
+
+.study-quit-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-light);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--body-font);
+}
+
+.study-quit-btn:hover {
+    border-color: var(--error);
+    color: var(--error);
+    background: #ffebee;
+}
+
+/* Study Content Area */
+.study-content {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    min-height: 300px;
+    animation: fadeIn 0.4s ease;
+    margin-bottom: 16px;
+}
+
+/* Stage 1: Học bài */
+.study-vocab-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.study-vocab-item {
+    background: linear-gradient(135deg, #f5f5ff, #e8eaf6);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    touch-action: manipulation;
+}
+
+.study-vocab-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.study-vocab-item:active {
+    transform: scale(0.97);
+}
+
+.study-vocab-item .sv-kr {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: var(--header-font);
+}
+
+.study-vocab-item .sv-pron {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.study-vocab-item .sv-mean {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.study-grammar-card {
+    background: #fff8e1;
+    border-left: 4px solid #ffa000;
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 12px 0;
+}
+
+.study-grammar-card h4 {
+    color: #e65100;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.study-grammar-card p {
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.study-example-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    touch-action: manipulation;
+}
+
+.study-example-item:hover {
+    background: #f5f5ff;
+}
+
+.study-example-item .se-kr {
+    font-weight: 600;
+    font-family: var(--header-font);
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.study-example-item .se-vi {
+    color: var(--text-secondary);
+    flex: 1;
+    min-width: 0;
+}
+
+/* Stage 2: Ôn từ (Flashcard style) */
+.study-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+}
+
+.study-card {
+    width: 100%;
+    max-width: 360px;
+    min-height: 200px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(26,35,126,0.25);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    position: relative;
+}
+
+.study-card.flipped {
+    background: var(--card);
+    color: var(--text);
+    border: 2px solid var(--border);
+    transform: rotateY(360deg);
+}
+
+.study-card .sc-word {
+    font-size: 36px;
+    font-weight: 700;
+    font-family: var(--header-font);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.study-card .sc-pron {
+    font-size: 16px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+
+.study-card .sc-mean {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.study-card .sc-hint {
+    font-size: 12px;
+    opacity: 0.6;
+    margin-top: 12px;
+}
+
+.study-card .sc-counter {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 12px;
+    opacity: 0.6;
+    font-weight: 500;
+}
+
+.study-card-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Stage 3: Bài tập */
+.study-quiz-question {
+    text-align: center;
+    padding: 20px;
+}
+
+.study-quiz-question .sq-kr {
+    font-size: 40px;
+    font-weight: 700;
+    font-family: var(--header-font);
+    margin-bottom: 8px;
+}
+
+.study-quiz-question .sq-prompt {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.study-quiz-question .sq-count {
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.study-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.study-quiz-option {
+    padding: 14px 20px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 15px;
+    text-align: center;
+    background: var(--card);
+    font-weight: 500;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.study-quiz-option:hover {
+    border-color: var(--primary);
+    background: #f5f5ff;
+}
+
+.study-quiz-option:active {
+    transform: scale(0.97);
+}
+
+.study-quiz-option.selected {
+    border-color: var(--primary);
+    background: #e8eaf6;
+}
+
+.study-quiz-option.correct {
+    border-color: var(--success);
+    background: #e8f5e9;
+}
+
+.study-quiz-option.incorrect {
+    border-color: var(--error);
+    background: #ffebee;
+}
+
+/* Result / Complete */
+.study-flow-complete .study-result {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.study-result-icon {
+    font-size: 72px;
+    margin-bottom: 12px;
+}
+
+.study-result h3 {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: var(--header-font);
+    margin-bottom: 24px;
+}
+
+.study-result-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.result-stat {
+    background: var(--bg);
+    padding: 16px 24px;
+    border-radius: var(--radius-sm);
+    min-width: 120px;
+}
+
+.result-value {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary);
+    font-family: var(--header-font);
+}
+
+.result-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.study-result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Nav */
+.study-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.study-nav-btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--body-font);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.study-nav-btn:active {
+    transform: scale(0.97);
+}
+
+.study-nav-btn.primary {
+    background: var(--primary);
+    color: white;
+    margin-left: auto;
+}
+
+.study-nav-btn.primary:hover {
+    background: var(--primary-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26,35,126,0.3);
+}
+
+.study-nav-btn.secondary {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.study-nav-btn.secondary:hover {
+    background: #e0e0e0;
+}
+
+.study-nav-btn.primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.study-flow-badge {
+    font-size: 12px;
+    color: var(--success);
+    font-weight: 600;
+    background: #e8f5e9;
+    padding: 4px 12px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+/* Progress bar in quiz */
+.study-q-progress {
+    height: 4px;
+    background: var(--bg);
+    border-radius: 2px;
+    max-width: 200px;
+    margin: 0 auto 12px;
+    overflow: hidden;
+}
+
+.study-q-progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .study-content {
+        padding: 20px 16px;
+    }
+    .study-vocab-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .study-progress-connector {
+        width: 24px;
+    }
+    .study-stats-preview {
+        flex-direction: column;
+        align-items: center;
+    }
+    .study-welcome h3 {
+        font-size: 22px;
+    }
+    .study-lesson-info {
+        font-size: 13px;
+        padding: 10px 16px;
+    }
+    .study-card {
+        max-width: 280px;
+        min-height: 170px;
+    }
+    .study-card .sc-word {
+        font-size: 28px;
+    }
+    .study-quiz-question .sq-kr {
+        font-size: 32px;
+    }
+    .study-result-stats {
+        gap: 12px;
+    }
+    .result-stat {
+        padding: 12px 16px;
+        min-width: 100px;
+    }
+    .result-value {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .study-vocab-list {
+        grid-template-columns: 1fr 1fr;
+    }
+    .study-progress-connector {
+        width: 16px;
+    }
+    .step-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+    }
+    .study-start-btn {
+        font-size: 18px;
+        padding: 16px 28px;
+        width: 100%;
+    }
+    .study-nav {
+        flex-direction: column;
+    }
+    .study-nav-btn.primary {
+        margin-left: 0;
+        width: 100%;
+    }
+    .study-nav-btn.secondary {
+        width: 100%;
+    }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .study-vocab-item {
+        background: linear-gradient(135deg, #1a1a3e, #1a1a2e);
+    }
+    .study-grammar-card {
+        background: #2a2a1a;
+    }
+    .study-card {
+        background: linear-gradient(135deg, #0d1454, #1a237e);
+    }
+    .study-card.flipped {
+        background: var(--card);
+        border-color: var(--border);
+    }
+    .study-stats-preview span {
+        background: var(--card);
+    }
+}
+
 /* ===== 12-MONTH ROADMAP ===== */
 .roadmap-year-plan {
     margin-top: 24px;
