@@ -1167,7 +1167,7 @@ function checkExercise() {
     }
     
     document.querySelectorAll('.exercise-option').forEach(o => {
-        if ((o.dataset.value || '''').normalize() === (window._currentExercise && window._currentExercise.correctAnswer || '''').normalize()) o.classList.add('correct');
+        if ((o.dataset.value || '').normalize() === (window._currentExercise && window._currentExercise.correctAnswer || '').normalize()) o.classList.add('correct');
         else if (o.classList.contains('selected') && !correct) o.classList.add('incorrect');
     });
     
